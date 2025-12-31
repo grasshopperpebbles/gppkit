@@ -1,0 +1,102 @@
+# API Platform
+
+The API platform provides Node.js backend services.
+
+## Variants
+
+### express
+
+A Node.js Express application with TypeScript.
+
+```bash
+gpp add api express
+```
+
+**Includes:**
+- Express.js framework
+- TypeScript configuration
+- Route structure
+- Middleware setup
+
+## Python APIs
+
+For Python-based APIs, use the `python` platform instead:
+
+```bash
+# FastAPI
+gpp add python fastapi
+
+# Base Python project
+gpp add python base
+```
+
+See the [Python Platform](/docs/platforms/api#python-apis) section for more details.
+
+## Configuration
+
+API platform scripts in `.gpp/deploy.json`:
+
+```json
+{
+  "platforms": {
+    "api": {
+      "variant": "express",
+      "scripts": {
+        "start": "npm run dev",
+        "build": "npm run build"
+      }
+    }
+  }
+}
+```
+
+## Commands
+
+```bash
+# Start development server
+gpp start api
+
+# Build for production
+gpp build api
+```
+
+## Connecting to Web
+
+Use `gpp wire` to connect your API to a web frontend:
+
+```bash
+gpp wire api web
+```
+
+This generates API clients and configures environment variables.
+
+## FastAPI (Python)
+
+For FastAPI applications:
+
+```bash
+gpp add python fastapi
+```
+
+**Includes:**
+- FastAPI framework
+- Pydantic models
+- SQLAlchemy ORM
+- Alembic migrations
+- OpenAPI/Swagger docs
+
+Configuration for Python APIs:
+
+```json
+{
+  "platforms": {
+    "api": {
+      "variant": "fastapi",
+      "scripts": {
+        "start": "uvicorn main:app --reload",
+        "build": "pip install -r requirements.txt"
+      }
+    }
+  }
+}
+```

@@ -1,0 +1,128 @@
+# CMS Platform
+
+The CMS platform provides content management capabilities using Strapi or WordPress.
+
+## Variants
+
+### strapi-only
+
+A Strapi 5 CMS for production use.
+
+```bash
+gpp add cms strapi-only
+```
+
+**Includes:**
+- Strapi 5
+- MySQL database (Docker)
+- GraphQL plugin
+- SEO plugin
+- CKEditor 5
+
+### strapi-dev
+
+A Strapi 5 CMS configured for development and plugin testing.
+
+```bash
+gpp add cms strapi-dev
+```
+
+### wp-content
+
+WordPress with Docker-based development.
+
+```bash
+gpp add cms wp-content
+```
+
+**Includes:**
+- WordPress latest
+- Docker Compose setup
+- MySQL database
+- phpMyAdmin
+- Custom theme starter
+
+### cms-only
+
+A basic CMS setup.
+
+```bash
+gpp add cms cms-only
+```
+
+## Configuration
+
+CMS platform scripts in `.gpp/deploy.json`:
+
+```json
+{
+  "platforms": {
+    "cms": {
+      "variant": "strapi-only",
+      "scripts": {
+        "start": "npm run develop",
+        "build": "npm run build"
+      }
+    }
+  }
+}
+```
+
+## Commands
+
+```bash
+# Start CMS
+gpp start cms
+
+# Build for production
+gpp build cms
+```
+
+## Connecting to Web
+
+Use `gpp wire` to connect your CMS to a web frontend:
+
+```bash
+gpp wire cms web
+```
+
+This generates:
+- API client for fetching content
+- Type definitions for content types
+- Environment variable configuration
+
+## WordPress Development
+
+```bash
+cd apps/cms
+docker-compose up -d
+```
+
+Access:
+- WordPress: http://localhost:8080
+- phpMyAdmin: http://localhost:8081
+
+## Strapi Development
+
+```bash
+cd apps/cms
+npm install
+npm run develop
+```
+
+Access:
+- Strapi Admin: http://localhost:1337/admin
+- API: http://localhost:1337/api
+- GraphQL: http://localhost:1337/graphql
+
+## Strapi 5 Plugins
+
+The Strapi templates include these Strapi 5 compatible plugins:
+
+- `@strapi/plugin-graphql` - GraphQL API
+- `@strapi/plugin-documentation` - API documentation
+- `@strapi/plugin-seo` - SEO management
+- `@_sh/strapi-plugin-ckeditor` - Rich text editor
+- `strapi-plugin-navigation` - Navigation management
+- `strapi-plugin-comments` - Comments system
+- `strapi-plugin-config-sync` - Config synchronization

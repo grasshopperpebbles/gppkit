@@ -1,0 +1,127 @@
+# gpp add
+
+Add a new platform to your GPP project.
+
+## Usage
+
+```bash
+gpp add <platform> [variant]
+```
+
+## Arguments
+
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `platform` | Platform type (web, api, mobile, cms, desktop, python, worker) | Yes |
+| `variant` | Specific variant of the platform | No (uses default) |
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--static` | Create a static page without API calls (for route) |
+| `--dry-run` | Generate a plan without executing |
+
+## Platforms and Variants
+
+### Web
+
+```bash
+gpp add web              # Default: webapp
+gpp add web webapp
+gpp add web saas-dashboard
+gpp add web admin-dashboard
+gpp add web marketing
+gpp add web landing
+gpp add web devtool-site
+gpp add web headless-strapi
+gpp add web headless-wp-cms
+gpp add web headless-wp-ecommerce
+```
+
+### API
+
+```bash
+gpp add api express      # Node.js Express
+```
+
+### Python
+
+```bash
+gpp add python fastapi   # FastAPI
+gpp add python base      # Base Python project
+```
+
+### Mobile
+
+```bash
+gpp add mobile expo              # Expo (React Native)
+gpp add mobile flutter-standalone
+gpp add mobile flutter-api-client
+```
+
+### CMS
+
+```bash
+gpp add cms strapi-only  # Strapi 5 (production)
+gpp add cms strapi-dev   # Strapi 5 (development)
+gpp add cms wp-content   # WordPress
+gpp add cms cms-only     # Basic CMS
+```
+
+### Desktop
+
+```bash
+gpp add desktop electron
+```
+
+### Worker
+
+```bash
+gpp add worker celery-python
+```
+
+## What It Does
+
+1. Creates platform directory in `apps/<platform>/`
+2. Copies template files for the variant
+3. Registers platform in `.gpp/deploy.json`
+4. Sets up default scripts for the platform
+
+## Examples
+
+### Add a SaaS dashboard
+
+```bash
+gpp add web saas-dashboard
+```
+
+Creates `apps/web/` with authentication, dashboard layout, and billing components.
+
+### Add an Express API
+
+```bash
+gpp add api express
+```
+
+Creates `apps/api/` with Express.js and TypeScript.
+
+### Add an Expo mobile app
+
+```bash
+gpp add mobile expo
+```
+
+Creates `apps/mobile/` with Expo Router and NativeWind styling.
+
+### Add Strapi CMS
+
+```bash
+gpp add cms strapi-only
+```
+
+Creates `apps/cms/` with Strapi 5 and configured plugins.
+
+## Overwriting Existing Platforms
+
+If a platform already exists, GPP will prompt for confirmation before overwriting.

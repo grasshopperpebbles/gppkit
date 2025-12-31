@@ -1,0 +1,74 @@
+# Introduction
+
+GPP (GrasshopperPebbles Platform) is a command-line toolkit for scaffolding and managing multi-platform projects. It provides a unified structure for web, API, CMS, mobile, desktop, and worker applications.
+
+## Why GPP?
+
+Modern applications often span multiple platforms:
+- A **Next.js** frontend for the web
+- A **FastAPI** or **Express** backend
+- A **Flutter** or **Expo** mobile app
+- A **WordPress** or **Strapi** CMS
+- An **Electron** desktop app
+- **Celery** background workers
+
+Managing these as separate projects creates friction. GPP solves this by providing:
+
+1. **Unified project structure** - All platforms under one roof in `apps/`
+2. **Single-command control** - Start, stop, build any platform from root
+3. **Template system** - Quickly scaffold new platforms with variants
+4. **Platform wiring** - Connect platforms with adapters (API clients, etc.)
+5. **Logging system** - Built-in development logs for tracking progress
+
+## Quick Example
+
+```bash
+# Create a new project
+gpp init my-saas
+
+# Add a Next.js SaaS dashboard
+gpp add web saas-dashboard
+
+# Add an Express API
+gpp add api express
+
+# Add Strapi CMS
+gpp add cms strapi-only
+
+# Start the web app
+gpp start web
+```
+
+## Project Structure
+
+After running the commands above, your project looks like:
+
+```
+my-saas/
+├── .gpp/
+│   ├── config.json      # Project configuration
+│   └── deploy.json      # Platform deployment settings
+├── apps/
+│   ├── web/             # Next.js frontend
+│   ├── api/             # Express backend
+│   └── cms/             # Strapi CMS
+├── docs/                # Project documentation
+└── logs/                # Development logs (TODO, VERSION_LOG, etc.)
+```
+
+## Supported Platforms
+
+| Platform | Variants |
+|----------|----------|
+| **web** | webapp, saas-dashboard, admin-dashboard, marketing, landing, devtool-site, headless-strapi, headless-wp-* |
+| **api** | express |
+| **cms** | strapi-only, strapi-dev, wp-content, cms-only, ecommerce-* |
+| **mobile** | expo, flutter-standalone, flutter-api-client |
+| **desktop** | electron |
+| **worker** | celery-python |
+
+## Next Steps
+
+- [Installation](/docs/getting-started/installation) - Install GPP on your system
+- [Quick Start](/docs/getting-started/quick-start) - Create your first project
+- [Platforms](/docs/platforms) - Learn about supported platforms

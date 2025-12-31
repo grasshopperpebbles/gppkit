@@ -1,0 +1,72 @@
+# Platforms
+
+GPP supports multiple platform types, each with its own variants and configurations.
+
+## Supported Platforms
+
+| Platform | Variants | Description |
+|----------|----------|-------------|
+| **Web** | webapp, saas-dashboard, admin-dashboard, marketing, landing, devtool-site, headless-* | Next.js web applications |
+| **API** | express | Node.js backend services |
+| **Python** | fastapi, base, conda-trading | Python applications |
+| **Mobile** | expo, flutter-standalone, flutter-api-client | iOS and Android apps |
+| **CMS** | strapi-only, strapi-dev, wp-content, cms-only | Content management systems |
+| **Desktop** | electron | Desktop applications |
+| **Worker** | celery-python | Background job processors |
+
+## Platform Structure
+
+Each platform lives in the `apps/` directory:
+
+```
+my-project/
+├── apps/
+│   ├── web/        # Web platform
+│   ├── api/        # API platform
+│   ├── cms/        # CMS platform
+│   ├── mobile/     # Mobile platform
+│   ├── desktop/    # Desktop platform
+│   └── worker/     # Worker platform
+```
+
+## Adding Platforms
+
+Use `gpp add` to add a platform:
+
+```bash
+# Add with default variant
+gpp add web
+
+# Add with specific variant
+gpp add web saas-dashboard
+gpp add api express
+gpp add cms strapi-only
+gpp add mobile expo
+```
+
+## Platform Configuration
+
+Platform settings are stored in `.gpp/deploy.json`:
+
+```json
+{
+  "platforms": {
+    "web": {
+      "variant": "saas-dashboard",
+      "path": "apps/web",
+      "scripts": {
+        "start": "npm run dev",
+        "build": "npm run build"
+      }
+    }
+  }
+}
+```
+
+## Next Steps
+
+- [Web Platform](/docs/platforms/web) - Next.js web applications
+- [API Platform](/docs/platforms/api) - Backend services
+- [CMS Platform](/docs/platforms/cms) - Content management
+- [Mobile Platform](/docs/platforms/mobile) - Mobile apps
+- [Desktop Platform](/docs/platforms/desktop) - Desktop applications

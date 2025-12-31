@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "platforms": {
+    "web": {
+      "enabled": true,
+      "target": "vercel",
+      "variant": "devtool-site",
+      "path": "apps/web",
+      "scripts": {
+        "start": "npm run dev",
+        "build": "npm run build"
+      }
+    }
+  }
+}

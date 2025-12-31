@@ -1,0 +1,83 @@
+# Desktop Platform
+
+The desktop platform enables building cross-platform desktop applications using Electron.
+
+## Variants
+
+### electron
+
+A desktop application using Electron with web technologies.
+
+```bash
+gpp add desktop electron
+```
+
+**Includes:**
+- Electron framework
+- React renderer
+- IPC communication
+- Auto-updater setup
+- Native menus
+
+## Configuration
+
+Desktop platform scripts in `.gpp/deploy.json`:
+
+```json
+{
+  "platforms": {
+    "desktop": {
+      "variant": "electron",
+      "scripts": {
+        "start": "npm start",
+        "build": "npm run make"
+      }
+    }
+  }
+}
+```
+
+## Commands
+
+```bash
+# Start development
+gpp start desktop
+
+# Build for distribution
+gpp build desktop
+```
+
+## Building for Distribution
+
+```bash
+cd apps/desktop
+npm run make
+```
+
+This outputs installers for:
+- **Windows**: `.exe` installer
+- **macOS**: `.dmg` disk image
+- **Linux**: `.deb` / `.rpm` packages
+
+## Development Workflow
+
+1. Start the Electron app in development mode:
+   ```bash
+   gpp start desktop
+   ```
+
+2. Make changes to the renderer (React) code - hot reload is enabled
+
+3. For main process changes, restart the app
+
+## Packaging
+
+The Electron template uses [Electron Forge](https://www.electronforge.io/) for building and packaging.
+
+```bash
+# Package without creating installers
+npm run package
+
+# Create distributable installers
+npm run make
+```
