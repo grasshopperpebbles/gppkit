@@ -1,0 +1,190 @@
+# gpp doctor
+
+Check system health and diagnose issues with your GPP environment.
+
+## Usage
+
+```bash
+gpp doctor [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--all` | Include optional checks (Python, Flutter, gh) |
+| `--category <cat>` | Run only checks in specific category |
+| `--verbose` | Show detailed output with fix suggestions |
+
+## Examples
+
+```bash
+# Run standard health checks
+gpp doctor
+
+# Include all optional checks
+gpp doctor --all
+
+# Check only system dependencies
+gpp doctor --category system
+
+# Show detailed fix suggestions
+gpp doctor --verbose
+```
+
+## Check Categories
+
+### System (Required)
+
+Core dependencies that GPP requires:
+
+| Check | Description | Minimum Version |
+|-------|-------------|-----------------|
+| Node.js | JavaScript runtime | v18.0.0 |
+| pnpm | Package manager | v8.0.0 |
+| Git | Version control | v2.0.0 |
+| Docker | Container runtime | v20.0.0 |
+| Docker Compose | Container orchestration | v2.0.0 |
+
+### GPP (Required)
+
+GPP installation health:
+
+| Check | Description |
+|-------|-------------|
+| Home directory | `~/.gpp` exists and is writable |
+| Plugins directory | `~/.gpp/bin` exists |
+| Packs directory | `~/.gpp/packs` exists |
+| Lockfile | `~/.gpp/lock.json` is valid |
+| Secrets config | `~/.gpp/secrets.json` is valid |
+
+### Project (Required)
+
+Current project health (when in a GPP project):
+
+| Check | Description |
+|-------|-------------|
+| GPP detection | `.gpp/` directory exists |
+| Config valid | `.gpp/config.json` is valid |
+| Deploy config | `.gpp/deploy.json` is valid |
+| Platforms exist | Configured platforms have directories |
+| Env files | Platform .env files exist |
+
+### Optional
+
+Nice-to-have tools:
+
+| Check | Description |
+|-------|-------------|
+| Python | Python 3.x for FastAPI backends |
+| Flutter | Flutter SDK for mobile development |
+| GitHub CLI | `gh` for GitHub integration |
+
+## Check Statuses
+
+| Status | Symbol | Description |
+|--------|--------|-------------|
+| Pass | ✓ | Check passed successfully |
+| Warn | ⚠ | Non-critical issue detected |
+| Fail | ✗ | Critical issue that blocks functionality |
+| Skip | ○ | Check not applicable |
+
+## Example Output
+
+```
+GPP Doctor - System Health Check
+
+System:
+  ✓ Node.js v20.10.0
+  ✓ pnpm 8.15.1
+  ✓ Git 2.43.0
+  ✓ Docker 24.0.7
+  ✓ Docker Compose 2.23.3
+
+GPP:
+  ✓ Home directory (~/.gpp)
+  ✓ Plugins directory
+  ✓ Packs directory
+  ✓ Lockfile valid
+
+Project:
+  ✓ GPP project detected
+  ✓ Config valid
+  ✓ Deploy config valid
+  ⚠ Missing .env for web platform
+
+Summary: 12 passed, 1 warning, 0 failed
+```
+
+## Verbose Mode
+
+With `--verbose`, each check shows additional details:
+
+```
+⚠ Missing .env for web platform
+  Fix: Create apps/web/.env from apps/web/.env.example
+  Run: cp apps/web/.env.example apps/web/.env
+```
+
+## JSON Output
+
+```bash
+gpp --json doctor
+```
+
+Returns structured JSON with all check results:
+
+```json
+{
+  "success": true,
+  "data": {
+    "summary": {
+      "passed": 12,
+      "warned": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "checks": [
+      {
+        "name": "Node.js",
+        "category": "system",
+        "status": "pass",
+        "message": "v20.10.0",
+        "version": "20.10.0"
+      }
+    ]
+  }
+}
+```
+
+## Common Issues
+
+### Node.js not found
+
+```bash
+# Install via nvm (recommended)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install 20
+nvm use 20
+```
+
+### pnpm not found
+
+```bash
+# Install pnpm
+npm install -g pnpm
+```
+
+### Docker not running
+
+```bash
+# Start Docker Desktop or:
+sudo systemctl start docker
+```
+
+### Missing ~/.gpp directory
+
+```bash
+# Initialize GPP home
+mkdir -p ~/.gpp/bin ~/.gpp/packs ~/.gpp/templates
+```

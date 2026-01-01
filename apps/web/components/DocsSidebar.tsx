@@ -42,6 +42,10 @@ const navigation: NavSection[] = [
       { title: "gpp start/stop", href: "/docs/commands/start-stop" },
       { title: "gpp template", href: "/docs/commands/template" },
       { title: "gpp wire", href: "/docs/commands/wire" },
+      { title: "gpp audit", href: "/docs/commands/audit" },
+      { title: "gpp doctor", href: "/docs/commands/doctor" },
+      { title: "gpp secrets", href: "/docs/commands/secrets" },
+      { title: "gpp version", href: "/docs/commands/version" },
     ],
   },
   {

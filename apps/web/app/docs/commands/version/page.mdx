@@ -1,0 +1,223 @@
+# gpp version
+
+Pin platform versions for reproducible scaffolding.
+
+## Usage
+
+```bash
+gpp version <subcommand> [options]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | List pinned versions for current project |
+| `pin <platform>` | Pin platform to a specific version |
+| `unpin <platform>` | Remove version pin |
+| `check` | Check for updates to pinned versions |
+| `templates` | List available templates with versions |
+
+## List Pinned Versions
+
+```bash
+gpp version list
+```
+
+Shows all pinned platform versions in the current project.
+
+### Example Output
+
+```
+Pinned Versions:
+
+  web/saas-dashboard
+    Version: 0.9.74
+    Source:  bundled
+    Pinned:  2024-01-15
+    Reason:  Stable version for production
+
+  api/express
+    Version: 0.9.70
+    Source:  bundled
+    Pinned:  2024-01-10
+```
+
+## Pin a Version
+
+```bash
+gpp version pin <platform> [options]
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--variant <variant>` | Specify variant (uses default if not specified) |
+| `--version <version>` | Pin to specific version (uses current if not specified) |
+| `--reason <reason>` | Document why version is pinned |
+| `--force` | Force pin even if version not found |
+
+### Examples
+
+```bash
+# Pin web platform to current version
+gpp version pin web
+
+# Pin with specific variant
+gpp version pin web --variant saas-dashboard
+
+# Pin to specific version with reason
+gpp version pin api --version 0.9.70 --reason "Stable API structure"
+
+# Force pin (even if template not found locally)
+gpp version pin cms --version 0.9.65 --force
+```
+
+## Unpin a Version
+
+```bash
+gpp version unpin <platform>
+```
+
+Removes the version pin, allowing the platform to use the latest version.
+
+### Example
+
+```bash
+gpp version unpin web
+```
+
+## Check for Updates
+
+```bash
+gpp version check
+```
+
+Compares pinned versions to latest available and shows update status.
+
+### Example Output
+
+```
+Version Check:
+
+  web/saas-dashboard
+    Pinned:  0.9.70
+    Latest:  0.9.74
+    Status:  Update available (minor)
+
+  api/express
+    Pinned:  0.9.74
+    Latest:  0.9.74
+    Status:  Up to date
+```
+
+## List Available Templates
+
+```bash
+gpp version templates
+```
+
+Shows all available templates with their versions.
+
+### Example Output
+
+```
+Available Templates:
+
+  Bundled (v0.9.74):
+    web/saas-dashboard
+    web/landing
+    api/express
+    api/fastapi
+    cms/strapi-only
+    mobile/flutter-standalone
+
+  Packs:
+    @myorg/custom-templates (v1.2.0)
+      web/custom-dashboard
+```
+
+## Version Configuration
+
+Pins are stored in `.gpp/versions.json`:
+
+```json
+{
+  "version": 1,
+  "pins": {
+    "web": {
+      "variant": "saas-dashboard",
+      "version": "0.9.74",
+      "source": "bundled",
+      "pinnedAt": "2024-01-15T10:30:00.000Z",
+      "reason": "Stable version for production"
+    }
+  }
+}
+```
+
+## Version Sources
+
+| Source | Description |
+|--------|-------------|
+| `bundled` | Templates shipped with CLI |
+| `pack` | User-installed template packs |
+| `git` | Git repository reference |
+| `local` | Local filesystem path |
+
+## Version Resolution
+
+When scaffolding a platform, GPP resolves versions in this order:
+
+1. Check `.gpp/versions.json` for pinned version
+2. If pinned, use pinned version and source
+3. If not pinned, use latest from bundled templates
+4. Fall back to installed packs
+
+## Use Cases
+
+### Team Consistency
+
+Pin versions to ensure all team members scaffold identical templates:
+
+```bash
+# Lead developer pins versions
+gpp version pin web --reason "Team standard Q1 2024"
+gpp version pin api --reason "Team standard Q1 2024"
+
+# Commit versions.json
+git add .gpp/versions.json
+git commit -m "Pin platform versions for team consistency"
+```
+
+### Production Stability
+
+Pin to known-good versions before deploying:
+
+```bash
+gpp version pin web --version 0.9.70 --reason "Production validated"
+```
+
+### Gradual Updates
+
+Check for updates and upgrade one platform at a time:
+
+```bash
+# Check what's available
+gpp version check
+
+# Unpin to get latest
+gpp version unpin web
+
+# Test, then re-pin
+gpp version pin web --reason "Updated and tested"
+```
+
+## JSON Output
+
+```bash
+gpp --json version list
+gpp --json version check
+gpp --json version templates
+```

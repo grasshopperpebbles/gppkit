@@ -1,0 +1,200 @@
+# gpp audit
+
+Track and manage audit logs for AI and CLI actions in your GPP project.
+
+## Usage
+
+```bash
+gpp audit <subcommand> [options]
+```
+
+## Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | List recent audit entries |
+| `show <id>` | Show details of an audit entry |
+| `stats` | Show audit statistics |
+| `clear` | Clear the audit log |
+| `export [file]` | Export audit log to JSON |
+| `session start <ai>` | Start an AI session |
+| `session end` | End current AI session |
+
+## List Entries
+
+```bash
+gpp audit list [options]
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-n, --limit <count>` | Number of entries to show (default: 20) |
+| `-c, --category <cat>` | Filter by category |
+| `-a, --actor <type>` | Filter by actor type |
+| `-s, --session <id>` | Filter by session ID |
+| `--severity <level>` | Filter by severity |
+
+### Examples
+
+```bash
+# List last 20 entries
+gpp audit list
+
+# List last 50 entries
+gpp audit list --limit 50
+
+# Filter by AI actions only
+gpp audit list --actor ai
+
+# Filter by category
+gpp audit list --category scaffold
+```
+
+## Show Entry Details
+
+```bash
+gpp audit show <entry-id>
+```
+
+Displays full details of an audit entry including:
+- Timestamp, category, action, severity
+- Actor information (type, name, session)
+- Files affected (if any)
+- Command executed (if any)
+- Metadata
+
+## Statistics
+
+```bash
+gpp audit stats
+```
+
+Shows aggregate statistics:
+- Total entries
+- Entries by category (scaffold, config, file, etc.)
+- Entries by actor type (user, ai, cli, hook, system)
+- Entries by severity (info, warn, error, critical)
+- Active sessions count
+
+## Clear Log
+
+```bash
+gpp audit clear --force
+```
+
+Clears all audit entries. Requires `--force` flag for safety.
+
+## Export
+
+```bash
+gpp audit export [file] [options]
+```
+
+Exports audit log to JSON file.
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-c, --category <cat>` | Filter by category |
+| `-a, --actor <type>` | Filter by actor type |
+| `--since <date>` | Filter entries since date |
+
+### Example
+
+```bash
+# Export all entries
+gpp audit export audit-backup.json
+
+# Export only AI actions from last week
+gpp audit export ai-actions.json --actor ai --since 2024-01-01
+```
+
+## AI Sessions
+
+Track AI assistant interactions with session management.
+
+### Start Session
+
+```bash
+gpp audit session start <ai-name>
+```
+
+Starts a new AI session. Common AI names:
+- `claude` - Claude AI
+- `cursor` - Cursor IDE
+- `chatgpt` - ChatGPT
+- `copilot` - GitHub Copilot
+
+### End Session
+
+```bash
+gpp audit session end
+```
+
+Ends the current AI session.
+
+### Example Workflow
+
+```bash
+# AI starts working on project
+gpp audit session start claude
+
+# ... AI makes changes ...
+
+# AI finishes
+gpp audit session end
+
+# View session activity
+gpp audit list --actor ai
+```
+
+## Categories
+
+| Category | Description |
+|----------|-------------|
+| `scaffold` | Platform/template scaffolding |
+| `config` | Configuration changes |
+| `file` | File operations |
+| `command` | CLI command execution |
+| `env` | Environment operations |
+| `deploy` | Deployment operations |
+| `ai` | AI-specific actions |
+| `system` | System operations |
+
+## Actor Types
+
+| Actor | Description |
+|-------|-------------|
+| `user` | Human user actions |
+| `ai` | AI assistant actions |
+| `cli` | CLI automation/scripts |
+| `hook` | Event hook actions |
+| `system` | System-level actions |
+
+## Severity Levels
+
+| Severity | Description |
+|----------|-------------|
+| `info` | Informational (default) |
+| `warn` | Warning - non-critical issue |
+| `error` | Error - operation failed |
+| `critical` | Critical - requires attention |
+
+## Storage
+
+Audit logs are stored in `.gpp/audit.json` with:
+- Maximum 1000 entries (auto-rotated)
+- ISO 8601 timestamps
+- Unique entry IDs
+
+## JSON Output
+
+All commands support `--json` flag for machine-readable output:
+
+```bash
+gpp --json audit stats
+gpp --json audit list --limit 10
+```
