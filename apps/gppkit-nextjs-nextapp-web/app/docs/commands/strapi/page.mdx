@@ -1,0 +1,144 @@
+# gpp strapi
+
+Set up and manage Strapi CMS for your GPP project.
+
+## Usage
+
+```bash
+gpp strapi [options]
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--setup` | Initialize Strapi CMS platform |
+| `--dry-run` | Show what would be done without executing |
+
+## Setup
+
+Initialize a Strapi CMS in your project:
+
+```bash
+gpp strapi --setup
+```
+
+This command:
+
+1. **Creates the CMS platform** - Adds Strapi to `apps/<project>-strapi-<variant>-cms/`
+2. **Configures Docker** - Sets up `docker-compose.yml` with PostgreSQL
+3. **Wires to frontend** - Connects environment variables to your web platform
+4. **Configures API access** - Sets up API tokens for headless access
+
+## What It Creates
+
+```
+apps/myapp-strapi-headless-cms/
+├── docker-compose.yml
+├── .env
+├── config/
+│   ├── admin.ts
+│   ├── api.ts
+│   ├── database.ts
+│   └── server.ts
+├── src/
+│   └── api/              # Your content types
+└── types/
+```
+
+## Docker Configuration
+
+The setup includes:
+
+- **Strapi container** - Node.js app server
+- **PostgreSQL** - Database for content storage
+- **Volumes** - Persistent storage for uploads and database
+
+```yaml
+services:
+  strapi:
+    image: strapi/strapi
+    ports:
+      - "1337:1337"
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+```
+
+## Environment Variables
+
+After setup, these variables are configured:
+
+### CMS Platform (.env)
+
+```bash
+DATABASE_CLIENT=postgres
+DATABASE_HOST=postgres
+DATABASE_PORT=5432
+DATABASE_NAME=strapi
+DATABASE_USERNAME=strapi
+DATABASE_PASSWORD=<generated>
+ADMIN_JWT_SECRET=<generated>
+API_TOKEN_SALT=<generated>
+```
+
+### Web Platform (.env.local)
+
+```bash
+STRAPI_URL=http://localhost:1337
+STRAPI_TOKEN=<your-api-token>
+```
+
+## Starting Strapi
+
+After setup, start the CMS:
+
+```bash
+gpp start cms
+```
+
+Access the admin panel at `http://localhost:1337/admin`
+
+## Creating Content Types
+
+1. Open the Strapi admin panel
+2. Go to Content-Type Builder
+3. Create your content types (e.g., Article, Product)
+4. Generate frontend code:
+
+```bash
+gpp generate frontend --cms strapi
+```
+
+## Comparison with WordPress
+
+| Feature | Strapi | WordPress |
+|---------|--------|-----------|
+| API | REST + GraphQL | REST (GraphQL via plugin) |
+| Database | PostgreSQL/MySQL/SQLite | MySQL |
+| Admin UI | Modern React | Classic PHP |
+| Customization | Code-first | Plugin-based |
+| Hosting | Self-hosted/Cloud | Self-hosted/Managed |
+
+Use `gpp strapi --setup` for:
+- New projects needing a modern, customizable CMS
+- Projects requiring GraphQL
+- Teams comfortable with JavaScript/TypeScript
+
+Use `gpp cms setup` for:
+- WordPress-based CMS
+- Projects needing WordPress plugin ecosystem
+- Content teams familiar with WordPress
+
+## See Also
+
+- [CMS Platform](/docs/platforms/cms) - Overview of CMS options
+- [gpp generate frontend](/docs/commands/generate) - Generate code from CMS schema
+- [gpp wire](/docs/commands/wire) - Connect platforms together

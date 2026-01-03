@@ -1,0 +1,121 @@
+# gpp verify
+
+Verify GPP project structure and naming conventions.
+
+## Usage
+
+```bash
+gpp verify [platform] [options]
+```
+
+## Arguments
+
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `platform` | Specific platform to verify (optional) | No |
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-v, --verbose` | Show detailed verification output |
+
+## What It Checks
+
+### Project Structure
+
+- `.gpp/` directory exists with valid config files
+- `apps/` directory structure matches GPP conventions
+- Required files present (`config.json`, `deploy.json`)
+
+### Naming Conventions
+
+GPP enforces a consistent naming convention for platform directories:
+
+```
+apps/<project>-<stack>-<framework>-<platform>/
+```
+
+Examples:
+- `apps/myapp-nextjs-nextapp-web/`
+- `apps/myapp-python-fastapi-api/`
+- `apps/myapp-flutter-material-mobile/`
+
+### Platform Configuration
+
+- Each platform in `deploy.json` has a matching directory
+- Environment templates exist in `env/`
+- Docker configuration valid (if applicable)
+
+## Examples
+
+### Verify entire project
+
+```bash
+gpp verify
+```
+
+Output:
+```
+Checking project structure...
+✓ .gpp/config.json exists
+✓ .gpp/deploy.json exists
+✓ apps/ directory exists
+
+Checking naming conventions...
+✓ apps/myapp-nextjs-nextapp-web/ follows convention
+✓ apps/myapp-python-fastapi-api/ follows convention
+
+Checking platform configuration...
+✓ web platform configured correctly
+✓ api platform configured correctly
+
+All checks passed!
+```
+
+### Verify specific platform
+
+```bash
+gpp verify web
+```
+
+### Verbose output
+
+```bash
+gpp verify --verbose
+```
+
+Shows detailed information about each check, including:
+- File paths being checked
+- Configuration values being validated
+- Suggestions for fixing issues
+
+## Common Issues
+
+### Naming Convention Violations
+
+If a directory doesn't follow the naming convention:
+
+```
+✗ apps/frontend/ does not follow GPP naming convention
+  Expected: apps/<project>-<stack>-<framework>-<platform>/
+  Suggestion: Rename to apps/myapp-nextjs-nextapp-web/
+```
+
+### Missing Configuration
+
+```
+✗ Platform 'api' in deploy.json has no matching directory
+  Expected: apps/myapp-python-fastapi-api/
+```
+
+### Fix with gpp convert
+
+If you have an existing project that doesn't follow conventions:
+
+```bash
+gpp convert plan
+gpp convert apply
+```
+
+This will restructure your project to match GPP conventions.

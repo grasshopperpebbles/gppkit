@@ -5,7 +5,7 @@ Initialize a new GPP project with the standard directory structure.
 ## Usage
 
 ```bash
-gpp init <project-name>
+gpp init <project-name> [options]
 ```
 
 ## Arguments
@@ -13,6 +13,53 @@ gpp init <project-name>
 | Argument | Description | Required |
 |----------|-------------|----------|
 | `project-name` | Name of the project directory to create | Yes |
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--recipe <id>` | Use a specific recipe (e.g., `nextjs-strapi`, `flutter-fastapi`) |
+| `--with-wizard` | Use guided wizard for non-technical users |
+| `--dry-run` | Generate a plan without executing |
+
+## Interactive Mode (Default)
+
+When you run `gpp init` without the `--recipe` flag, it launches an interactive recipe selector:
+
+```bash
+gpp init my-saas
+```
+
+You'll be prompted to choose:
+1. **Project category** - E-commerce, Headless CMS, SaaS Dashboard, Mobile App, Landing Page
+2. **Tech stack** - Specific technologies within that category
+
+This is the recommended approach for new projects.
+
+## Direct Recipe Mode
+
+Skip the interactive prompts by specifying a recipe directly:
+
+```bash
+# Next.js + Strapi CMS
+gpp init my-blog --recipe nextjs-strapi
+
+# Flutter mobile app + FastAPI backend
+gpp init my-app --recipe flutter-fastapi
+
+# Next.js SaaS with authentication
+gpp init my-saas --recipe nextjs-saas
+```
+
+## Guided Wizard
+
+For non-technical users, the wizard asks intent-based questions:
+
+```bash
+gpp init my-project --with-wizard
+```
+
+The wizard guides you through questions like "What type of project are you building?" rather than asking about specific technologies.
 
 ## What It Creates
 
@@ -29,19 +76,26 @@ project-name/
 
 ## Examples
 
-### Create a new project
+### Interactive recipe selection
 
 ```bash
 gpp init my-saas
-cd my-saas
+# → Select category: SaaS Dashboard
+# → Select stack: Next.js + FastAPI + PostgreSQL
 ```
 
-### Initialize in current directory
+### Direct recipe for CI/scripting
 
 ```bash
-mkdir my-project
-cd my-project
-gpp init .
+gpp init my-blog --recipe nextjs-strapi
+cd my-blog
+gpp start
+```
+
+### Preview what would be created
+
+```bash
+gpp init my-project --recipe flutter-fastapi --dry-run
 ```
 
 ## Configuration Files
@@ -67,17 +121,15 @@ Stores platform configurations:
 }
 ```
 
-## Options
-
-| Option | Description |
-|--------|-------------|
-| `--dry-run` | Generate a plan without executing |
-
 ## Next Steps
 
-After initializing, add platforms:
+After initializing, you can add more platforms or start development:
 
 ```bash
+# Start all platforms
+gpp start
+
+# Or add additional platforms
 gpp add web saas-dashboard
 gpp add api express
 gpp add cms strapi-only

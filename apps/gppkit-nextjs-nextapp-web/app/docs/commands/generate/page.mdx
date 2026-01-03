@@ -1,0 +1,97 @@
+# gpp generate
+
+Generate code from various sources like CMS schemas.
+
+## Subcommands
+
+| Command | Description |
+|---------|-------------|
+| `gpp generate frontend` | Generate frontend code from CMS schemas |
+
+---
+
+## gpp generate frontend
+
+Generate frontend components and pages from your CMS schema (Strapi or WordPress).
+
+### Usage
+
+```bash
+gpp generate frontend [options]
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--cms <type>` | CMS type: `strapi` or `wordpress` |
+| `--output <dir>` | Output directory for generated files |
+| `--dry-run` | Preview what would be generated |
+
+### What It Generates
+
+Based on your CMS content types, this command generates:
+
+- **Page components** - React/Next.js pages for each content type
+- **API clients** - Type-safe fetch functions for CMS data
+- **TypeScript types** - Interfaces matching your CMS schema
+- **Route handlers** - Dynamic routes for content
+
+### Examples
+
+#### Generate from Strapi schema
+
+```bash
+gpp generate frontend --cms strapi
+```
+
+This connects to your running Strapi instance, reads the content-type schema, and generates:
+
+```
+apps/web/
+├── app/
+│   └── [contentType]/
+│       ├── page.tsx
+│       └── [slug]/page.tsx
+├── lib/
+│   └── api/
+│       └── [contentType].ts
+└── types/
+    └── strapi.ts
+```
+
+#### Generate from WordPress
+
+```bash
+gpp generate frontend --cms wordpress
+```
+
+Reads WordPress post types and generates corresponding Next.js pages.
+
+#### Preview without writing files
+
+```bash
+gpp generate frontend --cms strapi --dry-run
+```
+
+### Requirements
+
+- CMS platform must be running (`gpp start cms`)
+- API access configured in environment variables
+- For Strapi: `STRAPI_URL` and optionally `STRAPI_TOKEN`
+- For WordPress: `WORDPRESS_URL` and REST API enabled
+
+### Supported CMS Platforms
+
+| CMS | Schema Detection | Generated Code |
+|-----|-----------------|----------------|
+| Strapi | Content-Type Builder API | Next.js App Router pages |
+| WordPress | REST API `/wp-json/wp/v2/types` | Next.js App Router pages |
+
+### Customization
+
+Generated code uses sensible defaults but can be customized:
+
+1. Edit generated files directly (they won't be overwritten)
+2. Use `--output` to generate to a different location
+3. Modify templates in `.gpp/templates/generate/` (if present)
