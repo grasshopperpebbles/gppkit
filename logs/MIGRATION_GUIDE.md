@@ -24,7 +24,7 @@ chmod +x logs/ensure_log_capacity.py
 The logging system requires 4 log files:
 
 1. `logs/TODO.md` - Work queue and task status
-2. `logs/VERSION_LOG.txt` - Versioned changelog
+2. `logs/CHANGELOG.md` - Changelog
 3. `logs/DEVELOPMENT.md` - Session-by-session notes
 4. `logs/STRATEGY_NOTES.md` - Architecture decisions
 
@@ -45,9 +45,9 @@ cat > logs/TODO.md << 'EOF'
 - [ ] Migrate to GPP logging system
 EOF
 
-# Create VERSION_LOG.txt
-cat > logs/VERSION_LOG.txt << 'EOF'
-VERSION LOG
+# Create CHANGELOG.md
+cat > logs/CHANGELOG.md << 'EOF'
+# CHANGELOG
 ===========
 
 Version 0.1.0 - Initial Migration
@@ -134,5 +134,5 @@ chmod +x logs/*.py
 
 **Issue:** Archive directories missing
 ```bash
-mkdir -p logs/{todo,version_log,development,strategy}_archives
+mkdir -p logs/{todo,changelog,development,strategy}_archives
 ```

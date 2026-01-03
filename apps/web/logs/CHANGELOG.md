@@ -1,11 +1,10 @@
-VERSION LOG - web
-==================
+# CHANGELOG - web
 
 **Platform:** web
 
 See LOGGING_SYSTEM.md for usage guidelines.
 
-**Note:** These logs are for web platform development. Project-wide logs are in the root `logs/` directory.
+**Note:** This changelog is for web platform development. Project-wide changelog is in the root `logs/` directory.
 
 =================================================
 
@@ -47,3 +46,4 @@ CHANGES:
 PAGES: 22 (21 content + icon.svg)
 
 =================================================
+

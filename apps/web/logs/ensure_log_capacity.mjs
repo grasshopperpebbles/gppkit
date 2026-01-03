@@ -25,7 +25,7 @@ const THRESH_BYTES = 50 * 1024;
 
 const LOGS = [
   { filename: 'TODO.md', archiveDir: 'todo_archives' },
-  { filename: 'VERSION_LOG.txt', archiveDir: 'version_log_archives' },
+  { filename: 'CHANGELOG.md', archiveDir: 'changelog_archives' },
   { filename: 'DEVELOPMENT.md', archiveDir: 'development_archives' },
   { filename: 'STRATEGY_NOTES.md', archiveDir: 'strategy_archives' },
 ];

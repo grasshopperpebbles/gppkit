@@ -16,7 +16,7 @@ This project uses a **4-log system**. Whenever you make a meaningful change, upd
 ## The 4 required logs
 
 1. `logs/TODO.md` — Work queue + status
-2. `logs/VERSION_LOG.txt` — Versioned changelog (human-readable)
+2. `logs/CHANGELOG.md` — Changelog (human-readable)
 3. `logs/DEVELOPMENT.md` — Session-by-session engineering notes
 4. `logs/STRATEGY_NOTES.md` — Architecture decisions, non-obvious reasoning, gotchas
 
@@ -52,7 +52,7 @@ This project uses a **4-log system**. Whenever you make a meaningful change, upd
 
 **Logs Updated:**
 - TODO.md
-- VERSION_LOG.txt
+- CHANGELOG.md
 - DEVELOPMENT.md
 - STRATEGY_NOTES.md
 ```
