@@ -1,3 +1,35 @@
+## Session: GPP Naming Convention Compliance
+**Date:** 2026-01-03
+**Status:** COMPLETED
+**Focus:** Rename platform directory to follow GPP naming convention.
+
+### Summary
+
+Renamed the `web` platform directory to follow the GPP naming convention format: `<system>-<technology>-<type>-<platform>`.
+
+### Changes Made
+
+**Directory Rename:**
+- `apps/web` → `apps/gppkit-nextjs-nextapp-web`
+
+### Verification
+
+- Ran `gpp verify` to confirm compliance
+- Root structure: ✅ VALID
+- Platform directory: ✅ VALID
+- Structure verification: ✅ PASSED
+
+**Warnings (Informational):**
+- Optional directory not found: `env/`
+- Optional directory not found: `scripts/`
+
+### Next Steps
+
+- Update any documentation or scripts that reference the old directory name
+- Consider adding optional `env/` and `scripts/` directories if needed
+
+---
+
 # GPPKit.dev Development Log
 
 ---

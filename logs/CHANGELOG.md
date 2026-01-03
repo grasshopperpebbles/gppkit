@@ -2,6 +2,22 @@
 
 =================================================
 
+Version 1.2.0 - GPP Naming Convention Compliance
+Date: 2026-01-03
+Status: COMPLETED
+
+**Changes:**
+- Renamed `apps/web` to `apps/gppkit-nextjs-nextapp-web` to follow GPP naming convention
+- Project now passes `gpp verify` validation
+- Root structure: VALID
+- Platform directory: VALID
+
+**Naming Convention:**
+- Format: `<system>-<technology>-<type>-<platform>`
+- Updated directory: `web` → `gppkit-nextjs-nextapp-web`
+
+=================================================
+
 Version 1.1.0 - OpenGraph Images & SEO
 Date: 2025-12-31
 Status: COMPLETED
