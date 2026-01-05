@@ -2,6 +2,25 @@
 
 =================================================
 
+Version 1.3.0 - GPP v0.9.89 Documentation Update
+Date: 2026-01-05
+Status: COMPLETED
+
+**Changes:**
+- Added `gpp package` command documentation page
+- Updated `gpp add` with `nextjs-app-landing` web variant
+- Updated `gpp generate` with `content app-landing` subcommand
+- Added `gpp package` to sidebar navigation
+
+**New Documentation:**
+- `/docs/commands/package` - Package publishing (strapi, npm, appstore)
+
+**Updated Pages:**
+- `/docs/commands/add` - Added nextjs-app-landing variant with example
+- `/docs/commands/generate` - Added content generation section
+
+=================================================
+
 Version 1.2.0 - GPP Naming Convention Compliance
 Date: 2026-01-03
 Status: COMPLETED

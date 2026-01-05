@@ -2,6 +2,16 @@
 
 ---
 
+## Completed (2026-01-05)
+
+### GPP v0.9.89 Documentation Update
+- [x] Add `gpp package` command documentation page
+- [x] Update `gpp add` docs with `nextjs-app-landing` variant
+- [x] Update `gpp generate` docs with `content app-landing` subcommand
+- [x] Add `gpp package` to DocsSidebar navigation
+
+---
+
 ## Completed (2025-12-31)
 
 ### Initial Site Setup

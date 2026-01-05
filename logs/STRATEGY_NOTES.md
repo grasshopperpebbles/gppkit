@@ -81,7 +81,7 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 ### Platforms Documented
 | Platform | Variants |
 |----------|----------|
-| Web | 10 variants (Next.js based) |
+| Web | 11 variants (Next.js based, including nextjs-app-landing) |
 | API | express |
 | Mobile | flutter, expo |
 | CMS | strapi-only, strapi-dev, wp-content |
@@ -96,6 +96,8 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 4. Wiring (wire command)
 5. Planning (plan list/show/apply/delete)
 6. Utilities (verify, convert, cms, strapi)
+7. Publishing (package strapi/npm/appstore)
+8. Generation (generate frontend, generate content)
 
 ---
 
@@ -137,4 +139,4 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 
 ---
 
-*Last updated: 2025-12-31*
+*Last updated: 2026-01-05*

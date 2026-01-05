@@ -1,3 +1,44 @@
+## Session: GPP v0.9.89 Documentation Update
+**Date:** 2026-01-05
+**Status:** COMPLETED
+**Focus:** Add documentation for new GPP CLI features.
+
+### Summary
+
+Updated gppkit.dev documentation to cover GPP CLI v0.9.89 features: package commands, content generation, and app-landing web variant.
+
+### Files Created
+
+**New Documentation Page:**
+- `app/docs/commands/package/page.mdx` - Package publishing command docs
+
+### Files Modified
+
+**Documentation Updates:**
+- `app/docs/commands/add/page.mdx` - Added `nextjs-app-landing` variant
+- `app/docs/commands/generate/page.mdx` - Added `content app-landing` subcommand
+
+**Navigation Update:**
+- `components/DocsSidebar.tsx` - Added `gpp package` to commands list
+
+### New Features Documented
+
+1. **gpp package** - Prepare projects for publishing
+   - `gpp package strapi` - Strapi marketplace
+   - `gpp package npm` - npm registry
+   - `gpp package appstore` - App Store/Play Store
+
+2. **gpp generate content** - AI-assisted content generation
+   - `gpp generate content app-landing` - Landing page content
+
+3. **nextjs-app-landing** - Mobile app marketing landing page variant
+
+### Version
+
+v1.3.0
+
+---
+
 ## Session: GPP Naming Convention Compliance
 **Date:** 2026-01-03
 **Status:** COMPLETED
