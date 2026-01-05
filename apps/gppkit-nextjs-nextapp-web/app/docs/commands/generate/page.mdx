@@ -13,7 +13,7 @@ Generate code and content from various sources.
 
 ## gpp generate frontend
 
-Generate frontend components and pages from your CMS schema (Strapi or WordPress).
+Generate a complete Next.js frontend from your Strapi CMS schema. This command reads your content types and generates pages, components, API clients, and TypeScript types.
 
 ### Usage
 
@@ -25,77 +25,283 @@ gpp generate frontend [options]
 
 | Option | Description |
 |--------|-------------|
-| `--cms <type>` | CMS type: `strapi` or `wordpress` |
+| `--source <type>` | CMS source: `strapi` (default), `wordpress`, `contentful` |
+| `--target <type>` | Frontend framework: `nextjs` (default), `sveltekit`, `expo` |
 | `--output <dir>` | Output directory for generated files |
+| `--strapi-url <url>` | Strapi URL for HTTP fetch (uses Live Preview plugin) |
+| `--strapi-path <path>` | Path to Strapi project for file-based fetch |
+| `--strapi-token <token>` | Strapi API token (optional) |
+| `--full` | Generate full GPP project structure |
 | `--dry-run` | Preview what would be generated |
+| `--verbose` | Show detailed output |
 
-### What It Generates
+---
+
+## Schema Fetching Methods
+
+There are **two ways** to fetch your Strapi schema. Choose the one that fits your workflow:
+
+### Method 1: HTTP Fetch (Live Preview Plugin)
+
+**Best for:** Running Strapi instance, live development, no file access needed
+
+This method connects to your running Strapi instance via HTTP and fetches schemas from the Live Preview plugin endpoint.
+
+#### Prerequisites
+
+1. **Install the Live Preview plugin** in your Strapi project:
+
+```bash
+cd your-strapi-project
+npm install @strapi/plugin-live-preview
+# or
+pnpm add @strapi/plugin-live-preview
+```
+
+2. **Enable the plugin** in `config/plugins.ts`:
+
+```typescript
+export default {
+  'live-preview': {
+    enabled: true,
+    config: {
+      // Optional: customize settings
+    },
+  },
+};
+```
+
+3. **Restart Strapi** to activate the plugin:
+
+```bash
+npm run develop
+# or
+pnpm develop
+```
+
+4. **Verify the endpoint** is accessible:
+
+```bash
+curl http://localhost:1337/api/live-preview/schemas
+```
+
+You should see JSON output with your content type schemas.
+
+#### Usage
+
+```bash
+# Default: connects to http://localhost:1337
+gpp generate frontend --output ./frontend
+
+# Custom Strapi URL
+gpp generate frontend --strapi-url http://my-strapi.com:1337 --output ./frontend
+
+# With API token (for authenticated endpoints)
+gpp generate frontend --strapi-url http://localhost:1337 --strapi-token YOUR_TOKEN --output ./frontend
+```
+
+#### How It Works
+
+1. Connects to `/api/live-preview/schemas` endpoint (no auth required)
+2. Falls back to Content-Type Builder API if Live Preview not available
+3. Falls back to GraphQL introspection if available
+4. Falls back to endpoint discovery (probing common API paths)
+
+---
+
+### Method 2: File-Based Fetch (Direct Project Access)
+
+**Best for:** Strapi not running, CI/CD pipelines, offline development, Docker volumes
+
+This method reads schema files directly from your Strapi project directory. No running Strapi instance required.
+
+#### Prerequisites
+
+You need access to the Strapi project files. The expected structure is:
+
+```
+your-strapi-project/
+├── package.json              # Must contain @strapi/strapi dependency
+└── src/
+    └── api/
+        ├── article/
+        │   └── content-types/
+        │       └── article/
+        │           └── schema.json    # ← Schema file
+        ├── category/
+        │   └── content-types/
+        │       └── category/
+        │           └── schema.json
+        └── ...
+```
+
+#### Usage
+
+```bash
+# Local Strapi project
+gpp generate frontend --strapi-path ./my-strapi-project --output ./frontend
+
+# Docker volume
+gpp generate frontend --strapi-path /var/strapi/app --output ./frontend
+
+# Mounted drive
+gpp generate frontend --strapi-path /mnt/cms/strapi --output ./frontend
+```
+
+#### Extracting from Docker
+
+If your Strapi runs in Docker, you can copy the project files:
+
+```bash
+# Copy entire src directory
+docker cp my-strapi-container:/opt/app/src ./strapi-src
+docker cp my-strapi-container:/opt/app/package.json ./strapi-src/../package.json
+
+# Or mount a volume
+docker run -v strapi-data:/opt/app my-strapi-image
+```
+
+#### How It Works
+
+1. Validates the path is a Strapi project (checks for `@strapi/strapi` dependency)
+2. Reads all `src/api/*/content-types/*/schema.json` files
+3. Extracts project name and Strapi version from `package.json`
+4. Transforms schemas to match the HTTP fetch format
+
+---
+
+## What Gets Generated
 
 Based on your CMS content types, this command generates:
 
-- **Page components** - React/Next.js pages for each content type
-- **API clients** - Type-safe fetch functions for CMS data
-- **TypeScript types** - Interfaces matching your CMS schema
-- **Route handlers** - Dynamic routes for content
-
-### Examples
-
-#### Generate from Strapi schema
-
-```bash
-gpp generate frontend --cms strapi
-```
-
-This connects to your running Strapi instance, reads the content-type schema, and generates:
+### Simple Mode (default)
 
 ```
-apps/web/
+output-directory/
 ├── app/
-│   └── [contentType]/
-│       ├── page.tsx
-│       └── [slug]/page.tsx
+│   ├── generated/              # Generated content pages
+│   │   ├── page.tsx            # Index with links to all content
+│   │   ├── articles/
+│   │   │   ├── page.tsx        # Article list
+│   │   │   └── [slug]/page.tsx # Article detail
+│   │   └── ...
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/
+│   └── generated/
+│       ├── ArticleCard.tsx     # Card component
+│       ├── ArticleDetail.tsx   # Detail component
+│       └── ...
 ├── lib/
-│   └── api/
-│       └── [contentType].ts
-└── types/
-    └── strapi.ts
+│   └── strapi.ts               # Strapi API client
+├── types/
+│   └── generated.ts            # TypeScript interfaces
+├── package.json
+├── tsconfig.json
+├── tailwind.config.ts
+├── next.config.ts
+└── .env.local
 ```
 
-#### Generate from WordPress
+### Full GPP Mode (`--full`)
+
+```
+output-directory/
+├── .gpp/
+│   ├── config.json
+│   └── deploy.json
+├── apps/
+│   └── myproject-nextjs-nextapp-web/
+│       ├── app/
+│       ├── components/
+│       ├── lib/
+│       ├── types/
+│       ├── docs/
+│       ├── env/
+│       ├── logs/
+│       └── package.json
+├── docs/
+├── env/
+└── logs/
+```
+
+---
+
+## Examples
+
+### Generate from running Strapi (recommended)
 
 ```bash
-gpp generate frontend --cms wordpress
+# Start Strapi
+cd my-strapi && pnpm develop
+
+# Generate frontend
+gpp generate frontend \
+  --strapi-url http://localhost:1337 \
+  --output ./frontend
+
+# Install and run
+cd frontend && pnpm install && pnpm dev
 ```
 
-Reads WordPress post types and generates corresponding Next.js pages.
-
-#### Preview without writing files
+### Generate from Strapi project files
 
 ```bash
-gpp generate frontend --cms strapi --dry-run
+# Generate without running Strapi
+gpp generate frontend \
+  --strapi-path ./my-strapi-project \
+  --output ./frontend
+
+# Install and run
+cd frontend && pnpm install && pnpm dev
 ```
 
-### Requirements
+### Generate full GPP project
 
-- CMS platform must be running (`gpp start cms`)
-- API access configured in environment variables
-- For Strapi: `STRAPI_URL` and optionally `STRAPI_TOKEN`
-- For WordPress: `WORDPRESS_URL` and REST API enabled
+```bash
+gpp generate frontend \
+  --strapi-url http://localhost:1337 \
+  --output ./my-project \
+  --full
+```
 
-### Supported CMS Platforms
+### Preview without writing files
 
-| CMS | Schema Detection | Generated Code |
-|-----|-----------------|----------------|
-| Strapi | Content-Type Builder API | Next.js App Router pages |
-| WordPress | REST API `/wp-json/wp/v2/types` | Next.js App Router pages |
+```bash
+gpp generate frontend \
+  --strapi-path ./my-strapi \
+  --output ./frontend \
+  --dry-run \
+  --verbose
+```
 
-### Customization
+---
 
-Generated code uses sensible defaults but can be customized:
+## Troubleshooting
 
-1. Edit generated files directly (they won't be overwritten)
-2. Use `--output` to generate to a different location
-3. Modify templates in `.gpp/templates/generate/` (if present)
+### "No content types found"
+
+- Ensure you have custom content types (not just Users)
+- For HTTP: verify `/api/live-preview/schemas` returns data
+- For file-based: check `src/api/*/content-types/*/schema.json` files exist
+
+### "Not a Strapi project"
+
+- Ensure `package.json` exists and contains `@strapi/strapi` dependency
+- Check the path points to the project root, not `src/` or `api/`
+
+### "Live Preview plugin not found"
+
+- Install: `pnpm add @strapi/plugin-live-preview`
+- Enable in `config/plugins.ts`
+- Restart Strapi
+
+### Build errors after generation
+
+- Run `pnpm install` in the generated directory
+- Ensure `NEXT_PUBLIC_STRAPI_URL` is set in `.env.local`
+- Check TypeScript errors with `pnpm typecheck`
 
 ---
 
