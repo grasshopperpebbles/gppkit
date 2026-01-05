@@ -1,0 +1,113 @@
+# gpp package
+
+Prepare your project for publishing to package registries and marketplaces.
+
+## Usage
+
+```bash
+gpp package <type>
+```
+
+## Arguments
+
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `type` | Package type: `strapi`, `npm`, or `appstore` | Yes |
+
+## Package Types
+
+### strapi
+
+Prepare a Strapi plugin for marketplace submission.
+
+```bash
+gpp package strapi
+```
+
+Creates the required marketplace documentation:
+
+```
+marketplace/
+├── metadata.json    # Plugin metadata for Strapi Marketplace
+└── README.md        # Marketplace listing description
+```
+
+**metadata.json** includes:
+- Plugin name, description, version
+- Author and repository information
+- Strapi version compatibility
+- Keywords and categories
+
+### npm
+
+Prepare an npm package for registry publication.
+
+```bash
+gpp package npm
+```
+
+Sets up your project for npm publishing:
+
+- Validates `package.json` required fields
+- Creates `.npmignore` if needed
+- Generates `README.md` badges
+- Checks for common publishing issues
+
+### appstore
+
+Prepare a mobile app for App Store and Play Store submission.
+
+```bash
+gpp package appstore
+```
+
+Creates app store submission assets:
+
+```
+appstore/
+├── metadata.json       # App metadata for both stores
+├── screenshots/        # Screenshot placeholders
+├── descriptions/       # Store descriptions (multiple languages)
+└── privacy-policy.md   # Privacy policy template
+```
+
+## Examples
+
+### Prepare Strapi plugin for marketplace
+
+```bash
+cd apps/cms/src/plugins/my-plugin
+gpp package strapi
+```
+
+After running, review and update `marketplace/metadata.json` with your plugin details.
+
+### Prepare npm package
+
+```bash
+gpp package npm
+```
+
+Then publish with:
+
+```bash
+npm publish
+```
+
+### Prepare mobile app for stores
+
+```bash
+gpp package appstore
+```
+
+This generates templates for both iOS App Store and Google Play Store submissions.
+
+## Legacy Aliases
+
+These commands still work but show migration tips:
+
+```bash
+gpp add strapi-plugin  # Tip: Use 'gpp package strapi'
+gpp add npm-package    # Tip: Use 'gpp package npm'
+gpp add appstore-content  # Tip: Use 'gpp package appstore'
+```

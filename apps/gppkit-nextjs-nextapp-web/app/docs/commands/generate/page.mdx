@@ -1,12 +1,13 @@
 # gpp generate
 
-Generate code from various sources like CMS schemas.
+Generate code and content from various sources.
 
 ## Subcommands
 
 | Command | Description |
 |---------|-------------|
 | `gpp generate frontend` | Generate frontend code from CMS schemas |
+| `gpp generate content` | Generate content from project documentation |
 
 ---
 
@@ -95,3 +96,75 @@ Generated code uses sensible defaults but can be customized:
 1. Edit generated files directly (they won't be overwritten)
 2. Use `--output` to generate to a different location
 3. Modify templates in `.gpp/templates/generate/` (if present)
+
+---
+
+## gpp generate content
+
+Generate content files from your project documentation. Useful for AI-assisted development where content can be filled in based on project context.
+
+### Usage
+
+```bash
+gpp generate content <target> [options]
+```
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `target` | Content target type (currently: `app-landing`) |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--output <path>` | Custom output path for generated file |
+| `--dry-run` | Preview generated content without writing |
+
+### Supported Targets
+
+#### app-landing
+
+Generates content for mobile app landing pages (`nextjs-app-landing` variant).
+
+```bash
+gpp generate content app-landing
+```
+
+This reads your project documentation and generates `src/app/content.ts` with:
+
+- **APP_CONFIG** - App name, tagline, description, store links
+- **FEATURES** - Feature list with icons and descriptions
+- **SCREENSHOTS** - App screenshot placeholders
+- **TESTIMONIALS** - User testimonial placeholders
+- **FAQ_ITEMS** - FAQ questions and answers
+- **CTA_CONFIG** - Call-to-action section content
+
+### What It Reads
+
+The command gathers context from:
+
+- `README.md` - Project description and features
+- `logs/DEVELOPMENT.md` - Development details
+- `package.json` - Project name and metadata
+
+### Example Workflow
+
+```bash
+# 1. Add the landing page variant
+gpp add web nextjs-app-landing
+
+# 2. Generate content template
+gpp generate content app-landing
+
+# 3. Review and fill in TODO placeholders in content.ts
+# (AI assistants can help fill these based on your docs)
+
+# 4. Start the dev server
+gpp dev web
+```
+
+### AI Assistant Integration
+
+The generated `content.ts` includes clear `TODO:` comments that AI assistants (Claude, Cursor, etc.) can use to fill in content based on your project documentation. Simply ask the assistant to "fill in the app landing content based on the project docs".

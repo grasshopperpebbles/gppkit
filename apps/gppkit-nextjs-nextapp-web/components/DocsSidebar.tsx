@@ -41,6 +41,7 @@ const navigation: NavSection[] = [
       { title: "gpp add", href: "/docs/commands/add" },
       { title: "gpp start/stop", href: "/docs/commands/start-stop" },
       { title: "gpp generate", href: "/docs/commands/generate" },
+      { title: "gpp package", href: "/docs/commands/package" },
       { title: "gpp verify", href: "/docs/commands/verify" },
       { title: "gpp template", href: "/docs/commands/template" },
       { title: "gpp wire", href: "/docs/commands/wire" },

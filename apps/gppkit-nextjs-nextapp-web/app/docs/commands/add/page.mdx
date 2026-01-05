@@ -27,7 +27,7 @@ gpp add <platform> [variant]
 ### Web
 
 ```bash
-gpp add web              # Default: webapp
+gpp add web                    # Default: webapp
 gpp add web webapp
 gpp add web saas-dashboard
 gpp add web admin-dashboard
@@ -37,6 +37,7 @@ gpp add web devtool-site
 gpp add web headless-strapi
 gpp add web headless-wp-cms
 gpp add web headless-wp-ecommerce
+gpp add web nextjs-app-landing # Mobile app marketing landing page
 ```
 
 ### API
@@ -121,6 +122,26 @@ gpp add cms strapi-only
 ```
 
 Creates `apps/cms/` with Strapi 5 and configured plugins.
+
+### Add a mobile app landing page
+
+```bash
+gpp add web nextjs-app-landing
+```
+
+Creates `apps/web/` with a marketing landing page for mobile apps, including:
+- Hero section with phone mockup
+- Features grid
+- Screenshot carousel
+- Testimonials
+- FAQ accordion
+- App Store and Play Store download buttons
+
+After adding, generate content from your project docs:
+
+```bash
+gpp generate content app-landing
+```
 
 ## Overwriting Existing Platforms
 
