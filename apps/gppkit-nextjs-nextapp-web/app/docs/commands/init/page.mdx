@@ -41,15 +41,44 @@ This is the recommended approach for new projects.
 Skip the interactive prompts by specifying a recipe directly:
 
 ```bash
-# Next.js + Strapi CMS
+# SaaS with Go backend
+gpp init my-saas --recipe nextjs-go-postgres
+gpp init my-saas --recipe sveltekit-go-postgres
+
+# SaaS with Python backend
+gpp init my-saas --recipe nextjs-fastapi-postgres
+
+# Headless CMS
 gpp init my-blog --recipe nextjs-strapi
+gpp init my-blog --recipe nextjs-sanity
 
-# Flutter mobile app + FastAPI backend
+# Mobile app
 gpp init my-app --recipe flutter-fastapi
-
-# Next.js SaaS with authentication
-gpp init my-saas --recipe nextjs-saas
 ```
+
+## Available Recipes
+
+### SaaS Dashboard
+| Recipe | Frontend | Backend |
+|--------|----------|---------|
+| `nextjs-go-postgres` | Next.js | Go HTTP |
+| `sveltekit-go-postgres` | SvelteKit | Go HTTP |
+| `nextjs-fastapi-postgres` | Next.js | FastAPI |
+| `nextjs-supabase` | Next.js | Supabase |
+
+### Headless CMS
+| Recipe | Frontend | CMS |
+|--------|----------|-----|
+| `nextjs-strapi` | Next.js | Strapi |
+| `nextjs-sanity` | Next.js | Sanity |
+| `nextjs-storyblok` | Next.js | Storyblok |
+| `sveltekit-sanity` | SvelteKit | Sanity |
+
+### Mobile
+| Recipe | Framework | Backend |
+|--------|-----------|---------|
+| `flutter-fastapi` | Flutter | FastAPI |
+| `flutter-firebase` | Flutter | Firebase |
 
 ## Guided Wizard
 

@@ -1,20 +1,43 @@
 # Installation
 
-GPP requires Node.js 18 or later.
+## Prerequisites
 
-## npm (Recommended)
+Before installing GPP, ensure you have the following:
+
+### Required
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | 18.x or later | Runs GPP CLI and JavaScript/TypeScript projects |
+| **npm/pnpm/yarn** | Latest | Package management |
+| **Git** | 2.x or later | Version control, template fetching |
+| **Docker** | 24.x or later | All backend processes run in Docker (CMS, databases, APIs) |
+| **Docker Compose** | 2.x or later | Multi-container orchestration |
+
+### Optional (Language-Specific)
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Go** | 1.22 or later | Go API templates (`api/go-http`) |
+| **Python** | 3.11 or later | FastAPI templates |
+| **Rust** | Latest stable | Rust Axum templates |
+| **Flutter** | 3.x or later | Mobile app templates |
+
+## Install GPP CLI
+
+### npm (Recommended)
 
 ```bash
 npm install -g gpp-cli
 ```
 
-## pnpm
+### pnpm
 
 ```bash
 pnpm add -g gpp-cli
 ```
 
-## yarn
+### yarn
 
 ```bash
 yarn global add gpp-cli
@@ -29,7 +52,7 @@ gpp --version
 You should see the version number printed:
 
 ```
-0.9.52
+0.9.98
 ```
 
 ## Using npx
@@ -40,11 +63,21 @@ If you prefer not to install globally, you can use npx:
 npx gpp-cli init my-project
 ```
 
-## System Requirements
+## Verify Prerequisites
 
-- **Node.js**: 18.x or later
-- **Operating Systems**: macOS, Linux, Windows (WSL recommended)
-- **Optional**: Docker (for CMS platforms like Strapi)
+Check that required tools are installed:
+
+```bash
+# Node.js
+node --version
+
+# Git
+git --version
+
+# Docker (recommended)
+docker --version
+docker compose version
+```
 
 ## Next Steps
 

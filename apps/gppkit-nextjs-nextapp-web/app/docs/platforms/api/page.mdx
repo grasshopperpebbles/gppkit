@@ -1,10 +1,48 @@
 # API Platform
 
-The API platform provides Node.js backend services.
+The API platform provides backend services in multiple languages.
 
-## Variants
+## Available Templates
 
-### express
+| Template | Language | Framework | Use Case |
+|----------|----------|-----------|----------|
+| `api/express` | Node.js | Express | JavaScript/TypeScript APIs |
+| `api/go-http` | Go | stdlib | High-performance Go APIs |
+| `api/rust-axum` | Rust | Axum | Type-safe, performant APIs |
+| `python/fastapi` | Python | FastAPI | Python REST APIs |
+
+## Go HTTP API
+
+Production-ready Go REST API using standard library (no external frameworks).
+
+```bash
+gpp add api go-http
+```
+
+**Includes:**
+- Go 1.22 `net/http` routing
+- Structured logging (`slog`)
+- Graceful shutdown
+- CORS and request logging middleware
+- Example CRUD endpoints
+- Multi-stage Dockerfile
+- Makefile with common targets
+- Unit tests
+
+**Prerequisites:** Go 1.22+ or Docker
+
+**Project Structure:**
+```
+apps/api/
+├── cmd/server/main.go      # Entry point
+├── internal/api/server.go  # Routes, handlers
+├── internal/item/          # Example CRUD
+├── pkg/config/config.go    # Configuration
+├── Dockerfile
+└── Makefile
+```
+
+## Express (Node.js)
 
 A Node.js Express application with TypeScript.
 
@@ -18,19 +56,49 @@ gpp add api express
 - Route structure
 - Middleware setup
 
-## Python APIs
+## FastAPI (Python)
 
-For Python-based APIs, use the `python` platform instead:
+For FastAPI applications:
 
 ```bash
-# FastAPI
 gpp add python fastapi
-
-# Base Python project
-gpp add python base
 ```
 
-See the [Python Platform](/docs/platforms/api#python-apis) section for more details.
+**Includes:**
+- FastAPI framework
+- Pydantic models
+- SQLAlchemy ORM
+- Alembic migrations
+- OpenAPI/Swagger docs
+
+## Rust Axum
+
+High-performance Rust API:
+
+```bash
+gpp add api rust-axum
+```
+
+**Includes:**
+- Axum web framework
+- Tokio async runtime
+- Serde serialization
+- Tower middleware
+
+## SaaS Recipes
+
+Full-stack recipes that pair frontends with API backends:
+
+```bash
+# Next.js + Go API
+gpp init my-app --recipe nextjs-go-postgres
+
+# SvelteKit + Go API
+gpp init my-app --recipe sveltekit-go-postgres
+
+# Next.js + FastAPI
+gpp init my-app --recipe nextjs-fastapi-postgres
+```
 
 ## Configuration
 
@@ -40,10 +108,10 @@ API platform scripts in `.gpp/deploy.json`:
 {
   "platforms": {
     "api": {
-      "variant": "express",
+      "variant": "go-http",
       "scripts": {
-        "start": "npm run dev",
-        "build": "npm run build"
+        "start": "make run",
+        "build": "make build"
       }
     }
   }
@@ -69,34 +137,3 @@ gpp wire api web
 ```
 
 This generates API clients and configures environment variables.
-
-## FastAPI (Python)
-
-For FastAPI applications:
-
-```bash
-gpp add python fastapi
-```
-
-**Includes:**
-- FastAPI framework
-- Pydantic models
-- SQLAlchemy ORM
-- Alembic migrations
-- OpenAPI/Swagger docs
-
-Configuration for Python APIs:
-
-```json
-{
-  "platforms": {
-    "api": {
-      "variant": "fastapi",
-      "scripts": {
-        "start": "uvicorn main:app --reload",
-        "build": "pip install -r requirements.txt"
-      }
-    }
-  }
-}
-```
