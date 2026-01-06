@@ -1,0 +1,201 @@
+# gpp clone
+
+Create a new GPP project by cloning platforms from an existing project. This command handles everything: copying files, migrating databases, updating naming conventions, installing dependencies, and verifying the result.
+
+## Usage
+
+```bash
+gpp clone <source> <name> [options]
+```
+
+## Arguments
+
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `source` | Path to the source GPP project to clone from | Yes |
+| `name` | Name for the new project | Yes |
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--platforms <list>` | Comma-separated list of platforms to clone (e.g., `cms,web,api`) |
+| `--dry-run` | Preview what will be cloned without executing |
+
+## Examples
+
+### Clone All Platforms
+
+```bash
+# Clone entire project
+gpp clone ../my-existing-project my-new-project
+```
+
+### Clone Specific Platforms
+
+```bash
+# Clone only the CMS and web platforms
+gpp clone ../my-existing-project my-new-project --platforms cms,web
+
+# Clone only the API
+gpp clone ../my-existing-project my-new-project --platforms api
+```
+
+### Preview Mode
+
+```bash
+# See what would be cloned without making changes
+gpp clone ../my-existing-project my-new-project --dry-run
+```
+
+## What It Does
+
+The clone command executes 8 phases:
+
+### Phase 1: Create Project Structure
+
+Creates the standard GPP directory structure:
+- `.gpp/` - GPP configuration
+- `apps/` - Platform directories
+- `docs/` - Documentation
+- `env/` - Environment configs
+- `logs/` - Project logs
+- `backups/` - Database backups
+- `.nvmrc` - Node.js version (20)
+
+### Phase 2: Backup Databases
+
+If Docker is running, backs up databases from source platforms:
+- **PostgreSQL**: `pg_dump` with gzip compression
+- **MySQL/MariaDB**: `mysqldump` / `mariadb-dump`
+- **MongoDB**: `mongodump --archive`
+
+### Phase 3: Copy Platforms
+
+Copies platform directories with automatic updates:
+- Renames to match new project naming convention
+- Updates `package.json` name field
+- Updates `PROJECT_SLUG` in `.env` files
+- Updates container names in `docker-compose.yml`
+
+### Phase 4: Update Configuration
+
+Updates `deploy.json` with entries for cloned platforms.
+
+### Phase 5: Restore Databases
+
+Restores database backups to new containers with updated names.
+
+### Phase 6: Copy Environment Configs
+
+Copies environment configurations from `env/` directory.
+
+### Phase 7: Install Dependencies
+
+Automatically detects and installs dependencies:
+
+| Platform Type | Detection | Install Command |
+|---------------|-----------|-----------------|
+| Node.js | `package.json` | `pnpm install` / `yarn install` / `npm install` |
+| Python | `requirements.txt` | `pip install -r requirements.txt` |
+| Go | `go.mod` | `go mod download` |
+| Rust | `Cargo.toml` | `cargo fetch` |
+
+### Phase 8: Verify Structure
+
+Runs `gpp verify` to validate the new project structure.
+
+## Use Cases
+
+### Extract Platforms to New Project
+
+```bash
+# Extract WordPress CMS to standalone project
+gpp clone ../full-stack-app wordpress-site --platforms cms
+```
+
+### Create Project from Template
+
+```bash
+# Use an existing project as a template for new clients
+gpp clone ../client-template acme-corp
+```
+
+### Split Monorepo
+
+```bash
+# Split frontend and backend into separate projects
+gpp clone ../monorepo frontend-only --platforms web
+gpp clone ../monorepo backend-only --platforms api,worker
+```
+
+## Comparison with Other Commands
+
+| Command | Purpose | Creates New Project? | Database Handling |
+|---------|---------|---------------------|-------------------|
+| `gpp init` | Create empty project with recipe | Yes | Creates empty databases |
+| `gpp merge` | Add platforms to existing project | No | Backs up, copies backup file |
+| `gpp clone` | Create new project from existing | Yes | Backs up AND restores data |
+
+## Output Example
+
+```
+🚀 GPP Clone
+
+🔍 Validating source project...
+   ✓ Source: /path/to/source-project
+   ✓ Target: /path/to/new-project
+   ✓ Docker is running
+
+📋 Phase 1: Creating GPP project structure...
+   ✓ Created project: new-project
+
+📋 Phase 2: Backing up 1 database(s)...
+   ✓ Backed up postgres (245 KB)
+
+📋 Phase 3: Copying 2 platform(s)...
+   ✓ web copied
+   ✓ api copied
+
+📋 Phase 4: Updating deploy.json...
+   ✓ deploy.json updated
+
+📋 Phase 5: Restoring databases to new containers...
+   ✓ Restored postgres → postgres
+
+📋 Phase 6: Copying environment configurations...
+   ✓ Copied env/web → env/new-project-web
+
+📋 Phase 7: Installing dependencies...
+   Installing nodejs dependencies for web...
+   ✓ web dependencies installed
+   Installing python dependencies for api...
+   ✓ api dependencies installed
+
+📋 Phase 8: Verifying project structure...
+   ✓ Verification completed
+
+============================================================
+✅ CLONE COMPLETE!
+============================================================
+
+📁 New project: /path/to/new-project
+
+📊 Platforms cloned:
+   • web → apps/new-project-nextjs-nextapp-web ✓
+   • api → apps/new-project-python-fastapi-api ✓
+
+🗄️  Databases:
+   • postgres (POSTGRES) - backed up and restored
+
+📝 Next steps:
+  1. cd new-project
+  2. Review and update .env files in each platform
+  3. Run "gpp dev" to start development
+```
+
+## Requirements
+
+- Source must be a valid GPP project (has `.gpp/` directory)
+- Docker must be running for database migration
+- Target directory must not already exist
