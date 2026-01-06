@@ -98,10 +98,15 @@ project-name/
 │   ├── config.json      # Project configuration
 │   ├── deploy.json      # Platform settings
 │   └── plans/           # Execution plans
+├── .nvmrc               # Node.js version (if Node.js platforms)
 ├── apps/                # Platform applications
 ├── docs/                # Project documentation
 └── logs/                # Development logs
 ```
+
+### Node.js Version Management
+
+For projects with Node.js platforms (Next.js, SvelteKit, Strapi, etc.), GPP automatically creates an `.nvmrc` file at the project root specifying Node.js 20. This ensures consistent versions across all developers using nvm, fnm, volta, or asdf.
 
 ## Examples
 

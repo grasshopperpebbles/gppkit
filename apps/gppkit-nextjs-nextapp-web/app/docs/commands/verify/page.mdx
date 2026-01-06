@@ -47,6 +47,13 @@ Examples:
 - Environment templates exist in `env/`
 - Docker configuration valid (if applicable)
 
+### Node.js Version (.nvmrc)
+
+For projects with Node.js platforms:
+- Checks for `.nvmrc` file at project root
+- Auto-creates `.nvmrc` with Node.js 20 if missing
+- Warns if `.nvmrc` specifies an EOL version (< 18)
+
 ## Examples
 
 ### Verify entire project
