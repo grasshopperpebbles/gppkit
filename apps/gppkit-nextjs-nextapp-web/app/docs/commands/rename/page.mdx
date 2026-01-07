@@ -1,0 +1,224 @@
+# gpp rename
+
+Rename a GPP project and all its platforms. This command updates the parent folder, all app directories, configuration files, Docker compose files, environment files, and package.json files while preserving database data.
+
+## Usage
+
+```bash
+gpp rename <new-name> [options]
+```
+
+## Arguments
+
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `new-name` | The new name for the project | Yes |
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--dry-run` | Preview what will be renamed without executing |
+| `--keep-db-credentials` | Preserve DATABASE_URL and other database credential values |
+| `--no-rename-folder` | Skip renaming the parent folder |
+
+## Examples
+
+### Basic Rename
+
+```bash
+# Rename project from current name to "newproject"
+gpp rename newproject
+```
+
+### Preview Changes
+
+```bash
+# See what would be renamed without making changes
+gpp rename newproject --dry-run
+```
+
+### Preserve Database Credentials
+
+```bash
+# Rename but keep existing DATABASE_URL values
+gpp rename newproject --keep-db-credentials
+```
+
+### Skip Folder Rename
+
+```bash
+# Rename everything except the parent folder
+gpp rename newproject --no-rename-folder
+```
+
+## What It Does
+
+The rename command executes 8 phases:
+
+### Phase 1: Stop Docker Services
+
+Stops any running Docker containers to prevent conflicts during rename:
+- Runs `docker-compose down` in each platform directory
+- Ensures container names can be updated safely
+
+### Phase 2: Update Configuration
+
+Updates `.gpp/config.json` with the new project name.
+
+### Phase 3: Rename App Directories
+
+Renames all platform directories in `apps/` following the GPP naming convention:
+- `oldname-admin-next-admin-web` → `newname-admin-next-admin-web`
+- `oldname-python-fastapi-api` → `newname-python-fastapi-api`
+- Preserves the workspace, technology, type, and platform portions
+
+### Phase 4: Update Deploy Configuration
+
+Updates `deploy.json` with new platform keys matching the renamed directories.
+
+### Phase 5: Update Files
+
+Updates various configuration files in each platform:
+
+| File | Changes |
+|------|---------|
+| `docker-compose.yml` | Updates `container_name` values |
+| `.env` / `.env.local` | Updates `PROJECT_SLUG` variable |
+| `package.json` | Updates `name` field |
+
+### Phase 6: Rename Environment Configs
+
+Renames environment configuration directories in `env/`:
+- `env/oldname-web` → `env/newname-web`
+- `env/oldname-api` → `env/newname-api`
+
+### Phase 7: Rename Parent Folder
+
+Renames the project's parent folder (unless `--no-rename-folder` is used):
+- `/path/to/oldname` → `/path/to/newname`
+
+### Phase 8: Restart Docker Services
+
+Restarts Docker containers with new configuration:
+- Runs `docker-compose up -d` in each platform directory
+- Containers now use new names
+
+## Database Preservation
+
+**Important:** Database data is NOT lost during rename.
+
+Docker volume names (e.g., `postgres_data`, `redis_data`) are not prefixed with the project name, so renaming the project does not affect stored data. Only container names are updated.
+
+```yaml
+# docker-compose.yml volumes (unchanged)
+volumes:
+  postgres_data:    # ← Not renamed, data preserved
+  redis_data:       # ← Not renamed, data preserved
+```
+
+## Use Cases
+
+### Rebranding a Project
+
+```bash
+# Company rebrand from "acme" to "newbrand"
+cd acme-project
+gpp rename newbrand
+# Now at ../newbrand
+```
+
+### Cloning and Renaming
+
+```bash
+# Clone a template and give it a new name
+gpp clone ../template-project client-project
+cd client-project
+gpp rename acme-corp
+```
+
+### Fixing Naming Mistakes
+
+```bash
+# Correct a typo in the project name
+gpp rename corrected-name
+```
+
+## Comparison with Other Commands
+
+| Command | Purpose | Renames Folder? | Updates Files? |
+|---------|---------|-----------------|----------------|
+| `gpp init` | Create new project | N/A (creates new) | N/A |
+| `gpp clone` | Copy project with new name | Creates new folder | Yes, during copy |
+| `gpp rename` | Rename existing project | Yes (by default) | Yes, in place |
+
+## Output Example
+
+```
+🚀 GPP Rename
+
+🔍 Analyzing project...
+   Current name: oldproject
+   New name: newproject
+
+📋 Phase 1: Stopping Docker services...
+   ✓ Stopped cms containers
+   ✓ Stopped api containers
+
+📋 Phase 2: Updating .gpp/config.json...
+   ✓ Project name updated
+
+📋 Phase 3: Renaming app directories...
+   ✓ oldproject-nextjs-nextapp-web → newproject-nextjs-nextapp-web
+   ✓ oldproject-python-fastapi-api → newproject-python-fastapi-api
+   ✓ oldproject-strapi-strapi-cms → newproject-strapi-strapi-cms
+
+📋 Phase 4: Updating deploy.json...
+   ✓ Platform keys updated
+
+📋 Phase 5: Updating files...
+   ✓ Updated docker-compose.yml (3 files)
+   ✓ Updated .env files (5 files)
+   ✓ Updated package.json (2 files)
+
+📋 Phase 6: Renaming env/ directories...
+   ✓ env/oldproject-web → env/newproject-web
+   ✓ env/oldproject-api → env/newproject-api
+
+📋 Phase 7: Renaming parent folder...
+   ✓ /Users/dev/oldproject → /Users/dev/newproject
+
+📋 Phase 8: Restarting Docker services...
+   ✓ Started cms containers
+   ✓ Started api containers
+
+============================================================
+✅ RENAME COMPLETE!
+============================================================
+
+📁 Project renamed: newproject
+📍 New location: /Users/dev/newproject
+
+📊 Platforms renamed:
+   • web: newproject-nextjs-nextapp-web
+   • api: newproject-python-fastapi-api
+   • cms: newproject-strapi-strapi-cms
+
+📝 Next steps:
+  1. cd /Users/dev/newproject
+  2. Update any external references to the old project name
+  3. Update git remote URLs if needed
+```
+
+## Requirements
+
+- Must be run from within a GPP project (has `.gpp/` directory)
+- Docker should be running for graceful container rename
+- Parent directory must be writable for folder rename
+
+## Tips
+
+- Always use `--dry-run` first on large projects to preview changes
+- Use `--keep-db-credentials` when databases are shared with other projects
+- Use `--no-rename-folder` if you're running from inside the project directory
+- After rename, update any CI/CD configurations or deployment scripts that reference the old name
