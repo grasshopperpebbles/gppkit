@@ -40,6 +40,7 @@ const navigation: NavSection[] = [
       { title: "gpp init", href: "/docs/commands/init" },
       { title: "gpp add", href: "/docs/commands/add" },
       { title: "gpp clone", href: "/docs/commands/clone" },
+      { title: "gpp convert", href: "/docs/commands/convert" },
       { title: "gpp rename", href: "/docs/commands/rename" },
       { title: "gpp start/stop", href: "/docs/commands/start-stop" },
       { title: "gpp generate", href: "/docs/commands/generate" },

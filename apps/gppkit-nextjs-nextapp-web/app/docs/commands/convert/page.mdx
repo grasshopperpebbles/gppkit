@@ -1,0 +1,140 @@
+# gpp convert
+
+Convert existing codebases to GPP structure, or turn spreadsheets (CSV) into database-backed applications. Two flows: **project conversion** (existing repo → GPP) and **spreadsheet conversion** (CSV → new app).
+
+## Subcommands
+
+| Command | Description |
+|---------|-------------|
+| `gpp convert plan [path]` | Analyze existing project and write conversion report (no changes) |
+| `gpp convert apply [path]` | Convert existing project to GPP structure in place |
+| `gpp convert continue [path]` | Resume a partially completed conversion |
+| `gpp convert spreadsheet plan <path>` | Analyze CSV(s) and show conversion plan (detects app type) |
+| `gpp convert spreadsheet apply <path> --name <name>` | Generate application from spreadsheet (API + web, or API only) |
+| `gpp convert spreadsheet smart <path>` | Smart-analyze spreadsheet layout (human-readable patterns) |
+
+---
+
+## Convert existing project (plan / apply)
+
+Turn an existing repo into a GPP monorepo without moving code: add `.gpp/`, `docs/`, `logs/`, `env/`, and scaffold `apps/<platform>/` with default variants.
+
+### Usage
+
+```bash
+# From inside the repo
+gpp convert plan
+gpp convert apply
+
+# Or specify path
+gpp convert plan ../my-legacy-app
+gpp convert apply ../my-legacy-app
+```
+
+### Convert behavior (v1 safe apply)
+
+- **plan**: No changes. Writes `docs/CONVERSION_REPORT.md` with detected platforms and evidence.
+- **apply**: Creates missing GPP structure only (no code moves):
+  - Creates `.gpp/`, `docs/`, `logs/`, `env/`
+  - Scaffolds `apps/<platform>/{docs,env}` with default variants
+  - Updates `.gpp/deploy.json` with detected platforms (**enabled: false** by default)
+  - CMS platforms get matching frontend variants (e.g. `cms-ecommerce` → `headless-wp-full`)
+  - Never overwrites existing log files or env values
+
+---
+
+## Convert spreadsheet to application
+
+Turn CSV files (or a folder of CSVs, e.g. multi-tab export) into a new GPP project with an API and optional web app. Use **plan** first to see detected app type and mapping, then **apply** to generate the project.
+
+### Usage
+
+```bash
+gpp convert spreadsheet plan ./data/                    # Single CSV or folder of CSVs
+gpp convert spreadsheet apply ./data/ --name my-app     # Generate project (API + web)
+gpp convert spreadsheet apply ./data/ --name my-app --api-only
+```
+
+### Options (apply)
+
+| Option | Description |
+|--------|-------------|
+| `--name <name>` | **Required.** Name for the generated project |
+| `--api-only` | Generate API only (skip web frontend) |
+| `--no-seed` | Skip generating seed data from CSV rows |
+| `--max-seed <n>` | Max rows for seed data (default: 100) |
+| `--output <dir>` | Output directory (default: current directory) |
+
+---
+
+## Competition / tournament template (how it works)
+
+When your data looks like **leaderboards, tournaments, or fantasy sports** (teams, players, matches, scores, standings), GPP uses a built-in **competition base template** instead of inferring a schema from scratch. That keeps relationships and naming consistent and only adds your extra columns as custom (delta) fields.
+
+### App type detection
+
+Spreadsheet conversion detects app type from file names and column names:
+
+- **Competition** is chosen when the analyzer sees patterns such as: `team`, `player`, `match`, `game`, `score`, `standing`, `ranking`, `leaderboard`, `tournament`, `season`, `league`, `draft`, `roster`, `participant`, `competitor`, and column patterns like `score`, `points`, `wins`, `losses`, `rank`, `place`, `week`, `round`, `opponent`, `division`, etc.
+- If competition scores highest, conversion uses the **competition base template** and maps your CSVs to its models; any columns that don’t match the template become **delta fields** on the appropriate model.
+
+### Base template models
+
+The competition template defines these models and relationships. Your CSV files (e.g. one CSV per sheet) are matched to these by name/alias; column names are matched to field aliases.
+
+| Model | Table | Typical use | Example aliases (file/column names) |
+|-------|--------|-------------|-------------------------------------|
+| **League** | `leagues` | Tournament / competition container | league, tournament, competition, leagues |
+| **Season** | `seasons` | Year or campaign | season, seasons, year, campaign |
+| **Division** | `divisions` | Group, conference, bracket | division, conference, group, bracket |
+| **Team** | `teams` | Squad, club, franchise | team, teams, squad, club |
+| **Player** | `players` | Participant, athlete, competitor | player, players, member, participant |
+| **Roster** | `rosters` | Team–player membership | roster, rosters, lineup |
+| **Match** | `matches` | Game, fixture, result | match, matches, games, fixtures, results |
+| **Standing** | `standings` | Rank, leaderboard, table | standing, standings, rankings, leaderboard |
+| **PlayerStat** | `player_stats` | Per-game or aggregate stats | player_stats, stats, performance |
+| **Draft** / **DraftPick** | `drafts`, `draft_picks` | Draft events and picks | draft, drafts, picks |
+| **SeasonAnalysis** | `season_analysis` | Season summary per team | season_analysis, analysis |
+| **LeagueHistory** | `league_history` | Champions, MVP, history | league_history, history |
+
+Each model has a fixed set of **base fields** (with many aliases so names like `home_team`, `team1`, `pts`, `gp`, `w`, `l` map correctly). Your extra columns (e.g. custom stats or labels) are added as **delta fields** so the schema stays standard while still representing your data.
+
+### Delta-based schema (competition only)
+
+- **Base template**: Prisma models for League, Season, Division, Team, Player, Match, Standing, etc., with relationships and standard field names.
+- **Delta fields**: Columns in your CSVs that don’t match a base field are added as extra fields on the corresponding model (with types inferred).
+- **Result**: One coherent schema: standard competition structure plus your custom columns, without inventing new core entities from scratch.
+
+### Example workflow
+
+1. **Export** your tournament/league data to CSV (one file per sheet, or one combined file).
+2. **Plan** to see detection and mapping:
+   ```bash
+   gpp convert spreadsheet plan ./my-league-csvs/
+   ```
+   Check that the detected type is “competition” and that file/column mappings look correct.
+3. **Apply** to generate the project:
+   ```bash
+   gpp convert spreadsheet apply ./my-league-csvs/ --name my-league --max-seed 500
+   ```
+4. Open the generated project, run the API (and web app if generated), and adjust env/database as needed.
+
+### When competition template is not used
+
+If the detected app type is **not** competition (e.g. generic admin-dashboard, ecommerce, or api-only), conversion does **not** use the base template. Instead it infers models and fields from your CSV structure only. So for leaderboards/tournaments, ensure your file and column names look like the patterns above so competition is detected.
+
+---
+
+## Comparison
+
+| Flow | Purpose | Creates new project? | Typical use |
+|------|---------|----------------------|-------------|
+| `gpp convert plan` / `apply` | Existing repo → GPP structure | No (in-place) | Legacy app, existing monorepo |
+| `gpp convert spreadsheet plan` / `apply` | CSV → app | Yes | Spreadsheet → API + optional web; competition/tournament apps |
+
+---
+
+## Requirements
+
+- **Project conversion**: Target path must be a directory (existing codebase). No `.gpp/` required before running `plan`.
+- **Spreadsheet conversion**: Path must be a single CSV file or a directory containing CSV files. For competition template: use recognizable names (teams, players, matches, scores, standings, etc.) so app type is detected as competition.
