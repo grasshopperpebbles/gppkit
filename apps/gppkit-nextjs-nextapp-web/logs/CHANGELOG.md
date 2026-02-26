@@ -47,6 +47,25 @@ PAGES: 22 (21 content + icon.svg)
 
 =================================================
 
+Version 0.2.0 - Build & Lint Fixes
+Date: 2026-02-26
+Status: COMPLETED
+
+FIXES:
+- Removed unused Supabase scaffolding (lib/supabase/, middleware imports)
+- Removed @supabase/supabase-js and @supabase/ssr dependencies
+- Replaced Supabase auth middleware with no-op passthrough
+- Fixed unescaped quote entities in Search.tsx (react/no-unescaped-entities)
+
+ADDED:
+- .eslintrc.json (next/core-web-vitals)
+- ESLint 8 + eslint-config-next 15 dev dependencies
+
+BUILD: 30 static pages, Pagefind indexed
+LINT: 0 errors, 0 warnings
+
+=================================================
+
 Version 0.1.3 - New Command Documentation
 Date: 2026-01-03
 Status: COMPLETED

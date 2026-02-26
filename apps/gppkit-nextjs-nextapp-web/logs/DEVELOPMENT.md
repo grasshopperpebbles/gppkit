@@ -9,6 +9,36 @@ See LOGGING_SYSTEM.md for usage guidelines.
 
 ---
 
+## Session: Build & Lint Fixes
+**Date:** 2026-02-26
+**Status:** COMPLETED
+**Focus:** Fix build errors and add ESLint.
+
+### Changes Made
+
+**middleware.ts:**
+- Replaced Supabase auth middleware with no-op passthrough
+- Static export (`output: 'export'`) doesn't support middleware execution
+
+**package.json:**
+- Removed `@supabase/supabase-js` and `@supabase/ssr`
+- Added `eslint` (v8) and `eslint-config-next` (v15)
+
+**components/Search.tsx:**
+- Escaped `"` entities to `&ldquo;` / `&rdquo;`
+
+**.eslintrc.json (new):**
+- Extends `next/core-web-vitals`
+
+**Deleted:**
+- `lib/supabase/client.ts`, `lib/supabase/server.ts`, `lib/supabase/middleware.ts`
+
+### Technical Notes
+
+ESLint 9 + eslint-config-next 16 has a circular reference bug with FlatCompat. Using ESLint 8 + eslint-config-next 15 as the stable pair.
+
+---
+
 ## Session: Branding Implementation
 **Date:** 2025-12-31
 **Status:** COMPLETED

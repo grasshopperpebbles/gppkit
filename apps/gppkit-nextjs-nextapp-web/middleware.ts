@@ -1,19 +1,14 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+// Middleware disabled - not compatible with static export (output: 'export')
+// Supabase auth middleware can be re-enabled if switching to server deployment
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+import { type NextRequest, NextResponse } from "next/server";
+
+export function middleware(_request: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files (images, etc.)
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

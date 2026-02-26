@@ -9,6 +9,14 @@ See LOGGING_SYSTEM.md for usage guidelines.
 
 ---
 
+## Static Export Constraints
+
+- `output: 'export'` disables runtime middleware and API routes
+- Supabase auth middleware must be removed (no-op passthrough only)
+- ESLint 8 + eslint-config-next 15 is the stable linting pair for Next.js 15
+
+---
+
 ## Brand Identity
 
 ### Colors

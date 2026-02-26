@@ -139,4 +139,24 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 
 ---
 
-*Last updated: 2026-01-05*
+## Code Quality Strategy
+
+### ESLint Configuration
+- ESLint 8 + eslint-config-next 15 (compatible pair)
+- Extends `next/core-web-vitals` for strict React/Next.js rules
+- Note: ESLint 9 + eslint-config-next 16 has circular reference bugs with FlatCompat — avoid until resolved upstream
+
+### Static Export Constraints
+- `output: 'export'` means no middleware execution at runtime
+- Middleware file must exist but should be a no-op passthrough
+- Supabase auth middleware is incompatible — scaffolded from template, must be removed
+- API routes are disabled in static export mode
+
+### Template Scaffolding Cleanup
+- GPP `devtool-site` template includes Supabase scaffolding by default
+- For static sites: remove `lib/supabase/`, strip Supabase from middleware, remove deps
+- Keep middleware.ts as no-op (Next.js still compiles it)
+
+---
+
+*Last updated: 2026-02-26*

@@ -1,3 +1,55 @@
+## Session: Build & Lint Fixes
+**Date:** 2026-02-26
+**Status:** COMPLETED
+**Focus:** Fix build errors and add ESLint configuration.
+
+### Summary
+
+Resolved build failure caused by unused Supabase scaffolding and added ESLint configuration for code quality checks.
+
+### Issues Found & Fixed
+
+1. **Build failure: `Can't resolve '@supabase/ssr'`**
+   - Root cause: Supabase packages in package.json but not installed; middleware and lib/supabase/ scaffolded from template but unused
+   - Fix: Removed `@supabase/supabase-js` and `@supabase/ssr` from dependencies, deleted `lib/supabase/` directory, replaced Supabase middleware with no-op passthrough
+   - Note: Middleware is incompatible with `output: 'export'` (static site)
+
+2. **No ESLint configuration**
+   - `pnpm lint` prompted for interactive setup — no config file existed
+   - Fix: Added `.eslintrc.json` with `next/core-web-vitals`, installed ESLint 8 + eslint-config-next 15
+
+3. **Lint error: unescaped entities in Search.tsx**
+   - `react/no-unescaped-entities` on line 174 (curly quotes around search query)
+   - Fix: Replaced `"` with `&ldquo;` / `&rdquo;`
+
+### Files Modified
+
+- `middleware.ts` — Replaced Supabase auth middleware with no-op passthrough
+- `package.json` — Removed Supabase deps, added ESLint + eslint-config-next
+- `pnpm-lock.yaml` — Updated lockfile
+- `components/Search.tsx` — Escaped quote entities
+
+### Files Created
+
+- `.eslintrc.json` — ESLint configuration
+
+### Files Deleted
+
+- `lib/supabase/client.ts` — Unused Supabase client scaffolding
+- `lib/supabase/server.ts` — Unused Supabase server scaffolding
+- `lib/supabase/middleware.ts` — Unused Supabase middleware scaffolding
+
+### Verification
+
+- `pnpm build`: 30 static pages, Pagefind indexed 30 pages
+- `pnpm lint`: 0 errors, 0 warnings
+
+### Version
+
+v1.4.0
+
+---
+
 ## Session: GPP v0.9.89 Documentation Update
 **Date:** 2026-01-05
 **Status:** COMPLETED

@@ -2,6 +2,22 @@
 
 =================================================
 
+Version 1.4.0 - Build & Lint Fixes
+Date: 2026-02-26
+Status: COMPLETED
+
+**Changes:**
+- Removed unused Supabase scaffolding (middleware, lib/supabase/) — incompatible with static export
+- Removed `@supabase/supabase-js` and `@supabase/ssr` from dependencies
+- Added ESLint configuration (ESLint 8 + eslint-config-next 15)
+- Fixed unescaped quote entities in Search.tsx
+
+**Build:**
+- `pnpm build` passes: 30 static pages generated, Pagefind indexed
+- `pnpm lint` passes: 0 errors, 0 warnings
+
+=================================================
+
 Version 1.3.0 - GPP v0.9.89 Documentation Update
 Date: 2026-01-05
 Status: COMPLETED

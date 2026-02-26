@@ -2,6 +2,20 @@
 
 ---
 
+## Completed (2026-02-26)
+
+### Build & Lint Fixes
+- [x] Fix build failure from unused Supabase scaffolding
+- [x] Remove Supabase dependencies and lib/supabase/ directory
+- [x] Replace Supabase middleware with no-op passthrough
+- [x] Add ESLint configuration (.eslintrc.json)
+- [x] Install ESLint 8 + eslint-config-next 15
+- [x] Fix unescaped quote entities in Search.tsx
+- [x] Verify build passes (30 pages + Pagefind)
+- [x] Verify lint passes (0 errors)
+
+---
+
 ## Completed (2026-01-05)
 
 ### GPP v0.9.89 Documentation Update
