@@ -27,28 +27,29 @@ A Strapi 5 CMS configured for development and plugin testing.
 gpp add cms strapi-dev
 ```
 
-### wp-content
+### WordPress Variants
 
-WordPress with Docker-based development.
+WordPress headless CMS with Docker (MariaDB + Redis + phpMyAdmin).
 
 ```bash
-gpp add cms wp-content
+gpp cms setup
 ```
+
+| Variant | Description |
+|---------|-------------|
+| `cms-only` | WordPress headless CMS without WooCommerce |
+| `cms-ecommerce` | WordPress with CMS and WooCommerce (blog primary) |
+| `ecommerce-only` | WordPress with WooCommerce only |
+| `ecommerce-cms` | WordPress with CMS and WooCommerce (shop primary) |
 
 **Includes:**
-- WordPress latest
-- Docker Compose setup
-- MySQL database
-- phpMyAdmin
-- Custom theme starter
+- WordPress latest with Redis PHP extension
+- MariaDB 11, Redis 7, phpMyAdmin
+- Auto-install of standard plugins (WPGraphQL, ACF, Redis Cache, Rank Math, JWT Auth)
+- Five bundled custom plugins (gp-featured-items, gp-headless-config, gp-hero-slider, gp-most-popular, gp-social-poster)
+- Hero slider for rotating homepage images (ACF + WPGraphQL)
 
-### cms-only
-
-A basic CMS setup.
-
-```bash
-gpp add cms cms-only
-```
+See [gpp cms](/docs/commands/cms) for full setup documentation.
 
 ## Configuration
 

@@ -1,0 +1,133 @@
+# gpp cms
+
+Set up and manage WordPress CMS for your GPP project.
+
+## Usage
+
+```bash
+gpp cms setup [options]
+gpp cms configure [options]
+```
+
+## Setup
+
+Initialize a WordPress CMS with Docker:
+
+```bash
+gpp cms setup
+```
+
+Interactive prompts ask for site name, admin credentials, ports, database settings, and content base (`/blog` or `/article`).
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--content-base blog\|articles` | Choose URL base for posts |
+| `--force-env` | Overwrite existing `.env` and `.env.local` files |
+| `--non-interactive` | Use defaults or environment variables instead of prompts |
+| `--dry-run` | Show what would be done without executing |
+
+### Non-interactive mode
+
+Use environment variables for CI/automation:
+
+```bash
+GPP_SITE_NAME="My Blog" GPP_ADMIN_EMAIL=admin@example.com \
+  gpp cms setup --non-interactive
+```
+
+## What It Creates
+
+```
+apps/cms/
+├── docker-compose.yml     # WordPress + MariaDB + Redis + phpMyAdmin
+├── Dockerfile             # WordPress with Redis PHP extension
+├── .env                   # Backend configuration
+├── scripts/
+│   └── install-plugins.sh # Auto-installs plugins on container start
+└── wp-content/
+    └── plugins/           # Bundled custom plugins
+```
+
+## Bundled Custom Plugins
+
+CMS setup copies and activates these plugins automatically:
+
+| Plugin | Description |
+|--------|-------------|
+| **gp-featured-items** | Curate featured content sections (ACF relationship field + GraphQL) |
+| **gp-headless-config** | Expose GA4, Sentry, CloudWatch, Resend settings via GraphQL |
+| **gp-hero-slider** | Rotating hero images for blog homepages (ACF fields + GraphQL) |
+| **gp-most-popular** | Track and expose most-viewed posts via GraphQL |
+| **gp-social-poster** | Auto-post to social platforms on publish |
+
+All plugins require **ACF** and **WPGraphQL** (installed automatically via `install-plugins.sh`).
+
+## Docker Services
+
+| Service | Port (default) | Description |
+|---------|---------------|-------------|
+| WordPress | 8081 | Headless CMS with Redis PHP extension |
+| MariaDB | 3307 | Database |
+| Redis | 6380 | Object cache |
+| phpMyAdmin | 9091 | Database admin UI |
+
+## Configure
+
+Change the content URL base after setup:
+
+```bash
+gpp cms configure --content-base blog
+gpp cms configure --content-base articles
+```
+
+Add `--apply-permalinks` to update WordPress permalinks if containers are running.
+
+## Standard Plugins
+
+`install-plugins.sh` installs these from the WordPress plugin directory on first container start:
+
+- **wp-graphql** — GraphQL API
+- **advanced-custom-fields** — Custom fields
+- **redis-cache** — Object caching via Redis
+- **rank-math** — SEO
+- **jwt-authentication-for-wp-rest-api** — JWT auth
+- **woocommerce** — E-commerce (when `ENABLE_WOOCOMMERCE=true`)
+
+## Hero Slider
+
+The `gp-hero-slider` plugin provides rotating hero images:
+
+1. Navigate to **Hero Slides** in WordPress admin
+2. Add slides with title, featured image, subtitle, and optional CTA link
+3. Set **Sort Order** to control display sequence
+
+### GraphQL Query
+
+```graphql
+query GetHeroSlides {
+  heroSlides(first: 10, where: { orderby: { field: MENU_ORDER, order: ASC } }) {
+    nodes {
+      title
+      featuredImage {
+        node { sourceUrl, altText }
+      }
+      heroSlideFields {
+        heroSubtitle
+        heroLinkUrl
+        heroLinkText
+        heroSortOrder
+      }
+    }
+  }
+}
+```
+
+The frontend `hero-slides.ts` fetcher and `HeroCarousel` component consume this data automatically.
+
+## See Also
+
+- [CMS Platform](/docs/platforms/cms) — Overview of CMS options
+- [gpp strapi](/docs/commands/strapi) — Strapi CMS alternative
+- [gpp deploy](/docs/commands/deploy) — Deploy your project

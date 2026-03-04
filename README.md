@@ -1,6 +1,6 @@
 # gppkit.dev
 
-Official documentation and marketing site for [GPP CLI](https://github.com/grasshopperpebbles/gpp).
+Official documentation and marketing site for [GPP CLI](https://github.com/grasshopperpebbles/gpp-cli).
 
 ## About
 
@@ -45,8 +45,9 @@ The site includes documentation for:
 
 - **Getting Started** - Installation, Quick Start
 - **Platforms** - Web, API, Python, Mobile, CMS, Desktop, Worker
-- **Commands** - init, add, start/stop, template, wire
+- **Commands** - init, add, cms, deploy, clone, convert, rename, start/stop, template, wire, and more
 - **Templates** - Using, creating, and publishing templates
+- **CMS** - WordPress (bundled plugins, hero slider) and Strapi setup
 
 ## License
 

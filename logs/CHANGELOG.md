@@ -2,6 +2,20 @@
 
 =================================================
 
+Version 1.5.0 - CMS & Deploy Documentation
+Date: 2026-03-04
+Status: COMPLETED
+
+**Changes:**
+- Added `gpp cms` command documentation page (setup, bundled plugins, hero slider, GraphQL query)
+- Added `gpp deploy` command documentation page (prepare, checklist, status, list, configuration)
+- Updated CMS platform page with WordPress variants table and bundled custom plugins
+- Added `gpp cms` and `gpp deploy` to sidebar navigation
+- Fixed GitHub repo URL in README (gpp → gpp-cli)
+- Updated README documentation list with new command pages
+
+=================================================
+
 Version 1.4.0 - Build & Lint Fixes
 Date: 2026-02-26
 Status: COMPLETED

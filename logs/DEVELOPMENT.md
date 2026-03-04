@@ -1,3 +1,23 @@
+## Session: CMS & Deploy Documentation
+**Date:** 2026-03-04
+**Status:** COMPLETED
+**Focus:** Add missing command documentation pages for `gpp cms` and `gpp deploy`.
+
+### Summary
+
+GPP CLI had added significant CMS and deploy functionality (bundled WordPress plugins, hero slider, deploy checklist) but gppkit.dev had no documentation pages for `gpp cms` or `gpp deploy`. Created both command pages and updated the CMS platform page to reflect current capabilities.
+
+### Files Created
+- `app/docs/commands/cms/page.mdx` — Full `gpp cms` docs: setup, bundled plugins, hero slider with GraphQL query, Docker services, standard plugins, configure
+- `app/docs/commands/deploy/page.mdx` — Full `gpp deploy` docs: prepare, checklist, status, list, configuration
+
+### Files Modified
+- `app/docs/platforms/cms/page.mdx` — Replaced generic wp-content/cms-only sections with WordPress variants table, bundled plugin list, link to cms command page
+- `components/DocsSidebar.tsx` — Added `gpp cms` and `gpp deploy` nav items
+- `README.md` — Fixed GitHub URL, updated documentation list
+
+---
+
 ## Session: Build & Lint Fixes
 **Date:** 2026-02-26
 **Status:** COMPLETED

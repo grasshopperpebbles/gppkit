@@ -2,6 +2,20 @@
 
 ---
 
+## Completed (2026-03-04)
+
+### CMS & Deploy Documentation
+- [x] Add `gpp cms` command page (setup, bundled plugins, hero slider, GraphQL)
+- [x] Add `gpp deploy` command page (prepare, checklist, status, list)
+- [x] Update CMS platform page with WordPress variants and bundled plugins
+- [x] Add `gpp cms` and `gpp deploy` to DocsSidebar navigation
+- [x] Fix GitHub repo URL in README
+- [ ] Add `gpp db` command page — Future
+- [ ] Add `gpp env` command page — Future
+- [ ] Add `gpp merge` command page — Future
+
+---
+
 ## Completed (2026-02-26)
 
 ### Build & Lint Fixes

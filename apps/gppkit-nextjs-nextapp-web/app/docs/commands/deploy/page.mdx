@@ -1,0 +1,115 @@
+# gpp deploy
+
+Deploy platforms and generate production configuration.
+
+## Usage
+
+```bash
+gpp deploy <platform>
+gpp deploy prepare [--target <target>]
+gpp deploy status <platform>
+gpp deploy list
+gpp deploy checklist [--force]
+```
+
+## Subcommands
+
+### deploy &lt;platform&gt;
+
+Deploy a platform using the configured provider from `deploy.json`.
+
+```bash
+gpp deploy web
+gpp deploy cms
+```
+
+### deploy prepare
+
+Generate production Docker Compose files for self-hosted deployments.
+
+```bash
+# Default: Raspberry Pi / Portainer
+gpp deploy prepare
+# Generates: docker-compose.pi.yml
+
+# Cloud production
+gpp deploy prepare --target production
+# Generates: docker-compose.prod.yml
+```
+
+**Transformations applied:**
+- Removes `--reload` flags (dev-only)
+- Removes `./path` volume mounts (dev mounts)
+- Preserves named volumes (data persistence)
+- Adds `restart: unless-stopped` to all services
+- Strips empty `volumes:` keys
+
+### deploy status &lt;platform&gt;
+
+Check deployment status for a platform.
+
+```bash
+gpp deploy status web
+```
+
+### deploy list
+
+List available deploy providers.
+
+```bash
+gpp deploy list
+```
+
+Current providers: `fly`, `vercel`.
+
+### deploy checklist
+
+Generate project-specific deployment checklists based on your `deploy.json` configuration.
+
+```bash
+gpp deploy checklist
+```
+
+Creates two files in `docs/`:
+- **`PRE_DEPLOYMENT_CHECKLIST.md`** — verify/configure before deploying
+- **`DEPLOYMENT_CHECKLIST.md`** — execution steps during deployment
+
+Sections are conditional on your platforms, variants, and targets:
+- WordPress vs Strapi CMS items
+- WooCommerce/Stripe/PayPal items for e-commerce variants
+- Vercel/AWS/Cloudways deploy steps per target
+- FastAPI/Express/Rust-Axum API items
+- Cross-cutting DNS/SSL, rollback plan, and security checks
+
+Use `--force` to overwrite existing checklist files (preserves customizations by default).
+
+## Configuration
+
+Deploy configuration lives in `.gpp/deploy.json`:
+
+```json
+{
+  "platforms": {
+    "web": {
+      "variant": "nextjs-headless-wp-cms",
+      "enabled": true,
+      "targets": {
+        "vercel": { "provider": "vercel" }
+      }
+    },
+    "cms": {
+      "variant": "cms-only",
+      "enabled": true,
+      "targets": {
+        "cloudways": { "provider": "cloudways" }
+      }
+    }
+  }
+}
+```
+
+## See Also
+
+- [gpp cms](/docs/commands/cms) — WordPress CMS setup
+- [gpp strapi](/docs/commands/strapi) — Strapi CMS setup
+- [gpp start/stop](/docs/commands/start-stop) — Local development
