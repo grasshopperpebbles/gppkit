@@ -84,7 +84,7 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 | Web | 11 variants (Next.js based, including nextjs-app-landing) |
 | API | express |
 | Mobile | flutter, expo |
-| CMS | strapi-only, strapi-dev, wp-content |
+| CMS | WordPress (wp-content, wp-full, wp-ecommerce) + Strapi (strapi-only, strapi-dev) |
 | Desktop | electron, tauri |
 | Python | fastapi, base, conda-trading |
 | Worker | celery-python |
@@ -98,6 +98,8 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 6. Utilities (verify, convert, cms, strapi)
 7. Publishing (package strapi/npm/appstore)
 8. Generation (generate frontend, generate content)
+9. CMS (cms setup, bundled plugins, hero slider, Docker services, configure)
+10. Deployment (deploy prepare, checklist, status, list)
 
 ---
 
@@ -159,4 +161,4 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 
 ---
 
-*Last updated: 2026-02-26*
+*Last updated: 2026-03-04*
