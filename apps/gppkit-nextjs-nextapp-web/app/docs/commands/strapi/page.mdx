@@ -1,6 +1,6 @@
 # gpp strapi
 
-Set up and manage Strapi CMS for your GPP project.
+Set up and manage Strapi CMS for your GPP project. Paths for the CMS (and web) app come from `.gpp/deploy.json`, so `gpp start cms` and production use the same path without symlinks.
 
 ## Usage
 
@@ -12,12 +12,19 @@ gpp strapi [options]
 
 | Option | Description |
 |--------|-------------|
-| `--setup` | Initialize Strapi CMS platform |
+| `--setup` | Initialize or regenerate Strapi CMS (`.env`, `docker-compose.yml`, first-start script) |
 | `--dry-run` | Show what would be done without executing |
+| `--non-interactive` | Use defaults (e.g. content base `blog`) and skip prompts |
+
+## When to use setup vs add
+
+When you run **`gpp add cms strapi-only`** (or **`strapi-dev`**), GPP creates the CMS app and runs setup in env-only mode: `.env` and the web app’s `.env.local` are created, so the CMS is ready to run. A **first-start script** runs automatically in the container when you bring it up (e.g. installs the GraphQL plugin if needed), so **`docker compose up -d`** or **`gpp start cms`** is enough — no separate setup step required.
+
+Use **`gpp strapi --setup`** when you need to (re)generate `.env` or `docker-compose.yml`, or when you didn’t add Strapi via `gpp add`.
 
 ## Setup
 
-Initialize a Strapi CMS in your project:
+Initialize or regenerate Strapi CMS in your project:
 
 ```bash
 gpp strapi --setup
@@ -25,86 +32,99 @@ gpp strapi --setup
 
 This command:
 
-1. **Creates the CMS platform** - Adds Strapi to `apps/<project>-strapi-<variant>-cms/`
-2. **Configures Docker** - Sets up `docker-compose.yml` with PostgreSQL
-3. **Wires to frontend** - Connects environment variables to your web platform
-4. **Configures API access** - Sets up API tokens for headless access
+1. **Uses the CMS path from `.gpp/deploy.json`** (e.g. `apps/<project>-node-strapi-cms`) so dev and production use the same path
+2. **Configures Docker** - Writes `docker-compose.yml` with MySQL, Strapi, and phpMyAdmin, and a first-start script that runs once in the container (e.g. install GraphQL plugin)
+3. **Wires to frontend** - Connects environment variables to your web platform (path from `deploy.json`)
+4. **Configures API access** - Sets up API tokens and secrets for headless access
 
 ## What It Creates
 
 ```
-apps/myapp-strapi-headless-cms/
-├── docker-compose.yml
+apps/<project>-node-strapi-cms/   # Path from .gpp/deploy.json
+├── docker-compose.yml           # MySQL, Strapi, phpMyAdmin; strapi runs first-start once
+├── scripts/
+│   └── strapi-first-start.sh    # Runs once in container (e.g. install GraphQL)
 ├── .env
 ├── config/
 │   ├── admin.ts
-│   ├── api.ts
 │   ├── database.ts
 │   └── server.ts
 ├── src/
-│   └── api/              # Your content types
-└── types/
+│   └── api/                     # Your content types
+└── ...
 ```
 
 ## Docker Configuration
 
 The setup includes:
 
-- **Strapi container** - Node.js app server
-- **PostgreSQL** - Database for content storage
+- **Strapi container** - Node.js app; on first start runs `strapi-first-start.sh` once (e.g. install GraphQL), then keeps Strapi running
+- **MySQL** - Database for content storage
+- **phpMyAdmin** - Database management UI
 - **Volumes** - Persistent storage for uploads and database
+
+Example (simplified):
 
 ```yaml
 services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: strapi
+      MYSQL_USER: strapi
+      MYSQL_PASSWORD: ...
+
   strapi:
-    image: strapi/strapi
+    build: .
+    depends_on: [db]
+    volumes:
+      - ./scripts/strapi-first-start.sh:/usr/local/bin/strapi-first-start.sh:ro
+    command: ["bash", "-c", "... start Strapi in bg, wait for health, run first-start once, then wait"]
     ports:
       - "1337:1337"
-    environment:
-      DATABASE_CLIENT: postgres
-      DATABASE_HOST: postgres
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:15
-    volumes:
-      - strapi-data:/var/lib/postgresql/data
 ```
 
 ## Environment Variables
 
-After setup, these variables are configured:
+After setup, these variables are configured (CMS `.env` and web `.env.local`):
 
 ### CMS Platform (.env)
 
 ```bash
-DATABASE_CLIENT=postgres
-DATABASE_HOST=postgres
-DATABASE_PORT=5432
-DATABASE_NAME=strapi
-DATABASE_USERNAME=strapi
-DATABASE_PASSWORD=<generated>
-ADMIN_JWT_SECRET=<generated>
-API_TOKEN_SALT=<generated>
+PROJECT_SLUG=myproject
+MYSQL_DATABASE=strapi
+MYSQL_USER=strapi
+MYSQL_PASSWORD=<generated>
+STRAPI_PORT=1337
+STRAPI_APP_KEY=<generated>
+STRAPI_ADMIN_JWT_SECRET=<generated>
+STRAPI_API_TOKEN_SALT=<generated>
+STRAPI_TRANSFER_TOKEN_SALT=<generated>
+STRAPI_JWT_SECRET=<generated>
 ```
 
 ### Web Platform (.env.local)
 
 ```bash
-STRAPI_URL=http://localhost:1337
-STRAPI_TOKEN=<your-api-token>
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
 ```
 
 ## Starting Strapi
 
-After setup, start the CMS:
+After adding or setting up, start the CMS:
 
 ```bash
 gpp start cms
 ```
 
-Access the admin panel at `http://localhost:1337/admin`
+Or from the CMS directory (path from `deploy.json`):
+
+```bash
+cd apps/<your-cms-path>
+docker compose --env-file .env up -d
+```
+
+The first-start script runs automatically once in the container. Access the admin panel at `http://localhost:1337/admin`.
 
 ## Creating Content Types
 
@@ -114,7 +134,9 @@ Access the admin panel at `http://localhost:1337/admin`
 4. Generate frontend code:
 
 ```bash
-gpp generate frontend --cms strapi
+gpp generate frontend --strapi-url http://localhost:1337 --output ./frontend
+# or file-based (no Strapi running):
+gpp generate frontend --strapi-path ./apps/your-cms-path --output ./frontend
 ```
 
 ## Comparison with WordPress
@@ -122,17 +144,19 @@ gpp generate frontend --cms strapi
 | Feature | Strapi | WordPress |
 |---------|--------|-----------|
 | API | REST + GraphQL | REST (GraphQL via plugin) |
-| Database | PostgreSQL/MySQL/SQLite | MySQL |
+| Database | MySQL (GPP template) | MySQL/MariaDB |
 | Admin UI | Modern React | Classic PHP |
 | Customization | Code-first | Plugin-based |
 | Hosting | Self-hosted/Cloud | Self-hosted/Managed |
 
-Use `gpp strapi --setup` for:
+Use **`gpp add cms strapi-only`** (or **strapi-dev**) for:
 - New projects needing a modern, customizable CMS
-- Projects requiring GraphQL
+- Projects requiring GraphQL (plugin installed on first start)
 - Teams comfortable with JavaScript/TypeScript
 
-Use `gpp cms setup` for:
+Use **`gpp strapi --setup`** when you need to regenerate env/compose or didn’t add Strapi via `gpp add`.
+
+Use **`gpp cms setup`** for:
 - WordPress-based CMS
 - Projects needing WordPress plugin ecosystem
 - Content teams familiar with WordPress

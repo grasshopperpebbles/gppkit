@@ -8,6 +8,14 @@ See LOGGING_SYSTEM.md for usage guidelines.
 
 =================================================
 
+Version 0.2.1 - Strapi & CMS docs alignment
+Date: 2026-03-07
+Status: COMPLETED
+
+Updated docs to match GPP CLI: strapi command page (deploy paths, MySQL, first-start, env-on-add), CMS platform page (Strapi flow), add command page (path, Strapi example). See root logs/CHANGELOG.md v1.6.0.
+
+=================================================
+
 Version 0.1.0 - Initial Setup
 Date: 2025-12-30
 Status: COMPLETED

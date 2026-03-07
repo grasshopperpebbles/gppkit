@@ -2,6 +2,22 @@
 
 =================================================
 
+Version 1.6.0 - Strapi & CMS Docs (GPP CLI alignment)
+Date: 2026-03-07
+Status: COMPLETED
+
+**Changes:**
+- Rewrote `gpp strapi` command page: paths from `.gpp/deploy.json`, MySQL (not PostgreSQL), first-start script, env-on-add when using `gpp add cms strapi-only|strapi-dev`, `--non-interactive` option, correct generate frontend flags (`--strapi-url` / `--strapi-path`)
+- Updated CMS platform page: Strapi env-on-add and first-start automation; deploy.json `path`; Strapi development via `gpp start cms` or docker compose; added `path` to config example
+- Updated `gpp add` page: platform path from deploy.json, Strapi creates `.env` on add and first-start runs in container
+
+**Updated Pages:**
+- `/docs/commands/strapi` - Full refresh for current GPP behavior
+- `/docs/platforms/cms` - Strapi flow and configuration
+- `/docs/commands/add` - What it does, Add Strapi CMS example
+
+=================================================
+
 Version 1.5.0 - CMS & Deploy Documentation
 Date: 2026-03-04
 Status: COMPLETED

@@ -2,6 +2,15 @@
 
 ---
 
+## Completed (2026-03-07)
+
+### Strapi & CMS Docs (align with GPP CLI)
+- [x] Rewrite `gpp strapi` command page: deploy.json paths, MySQL, first-start automation, env-on-add, `--non-interactive`
+- [x] Update CMS platform page: Strapi env-on-add and first-start; deploy.json path; Strapi development with `gpp start cms`
+- [x] Update `gpp add` page: platform path from deploy.json, Strapi env-on-add and first-start in examples
+
+---
+
 ## Completed (2026-03-04)
 
 ### CMS & Deploy Documentation

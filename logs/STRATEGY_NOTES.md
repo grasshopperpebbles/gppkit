@@ -77,6 +77,7 @@ GPPKit.dev is the official documentation site for GPP CLI (GrasshopperPebbles CL
 - All docs reflect actual GPP CLI capabilities
 - No aspirational features listed as current
 - Version-specific (v0.9.52+)
+- 2026-03-07: Strapi/CMS docs aligned with GPP CLI (deploy.json paths, env-on-add, first-start automation)
 
 ### Platforms Documented
 | Platform | Variants |

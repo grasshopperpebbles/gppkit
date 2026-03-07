@@ -1,3 +1,22 @@
+## Session: Strapi & CMS Docs (GPP CLI alignment)
+**Date:** 2026-03-07
+**Status:** COMPLETED
+**Focus:** Align gppkit.dev docs with GPP CLI Strapi behavior (deploy paths, env-on-add, first-start automation).
+
+### Summary
+
+GPP CLI now uses paths from `.gpp/deploy.json` for CMS/web, creates `.env` when adding Strapi (`gpp add cms strapi-only|strapi-dev`), and runs a first-start script in the container so `docker compose up -d` is sufficient. The gpp strapi command page was outdated (PostgreSQL, generic paths, no first-start). Updated strapi command page, CMS platform page, and add command page to match.
+
+### Files Modified
+- `app/docs/commands/strapi/page.mdx` — Rewrite: deploy.json paths, MySQL + phpMyAdmin, first-start, env-on-add, `--non-interactive`, correct env vars and generate frontend options
+- `app/docs/platforms/cms/page.mdx` — Strapi env-on-add and first-start; deploy.json path note and example; Strapi development with `gpp start cms` / docker compose
+- `app/docs/commands/add/page.mdx` — What it does (path in deploy.json, Strapi env on add); Add Strapi CMS example (path, first-start)
+
+### Version
+v1.6.0
+
+---
+
 ## Session: CMS & Deploy Documentation
 **Date:** 2026-03-04
 **Status:** COMPLETED

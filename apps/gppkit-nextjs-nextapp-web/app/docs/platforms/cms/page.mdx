@@ -12,10 +12,12 @@ A Strapi 5 CMS for production use.
 gpp add cms strapi-only
 ```
 
+When you add the CMS, GPP creates `.env` and the web app’s `.env.local` so the CMS is ready to run. A first-start script runs automatically in the container (e.g. installs the GraphQL plugin), so **`gpp start cms`** or **`docker compose up -d`** is enough — no separate setup step.
+
 **Includes:**
 - Strapi 5
 - MySQL database (Docker)
-- GraphQL plugin
+- GraphQL plugin (installed on first container start)
 - SEO plugin
 - CKEditor 5
 
@@ -26,6 +28,8 @@ A Strapi 5 CMS configured for development and plugin testing.
 ```bash
 gpp add cms strapi-dev
 ```
+
+Same env-on-add and first-start behavior as strapi-only; uses separate ports (e.g. 1338) for isolation.
 
 ### WordPress Variants
 
@@ -53,12 +57,13 @@ See [gpp cms](/docs/commands/cms) for full setup documentation.
 
 ## Configuration
 
-CMS platform scripts in `.gpp/deploy.json`:
+CMS path and scripts are in `.gpp/deploy.json` (e.g. `platforms.cms.path` like `apps/<project>-node-strapi-cms`). GPP uses this path for `gpp start cms`, `gpp strapi --setup`, and production so dev and prod stay in sync.
 
 ```json
 {
   "platforms": {
     "cms": {
+      "path": "apps/myproject-node-strapi-cms",
       "variant": "strapi-only",
       "scripts": {
         "start": "npm run develop",
@@ -105,14 +110,21 @@ Access:
 
 ## Strapi Development
 
+Start the CMS (path from `.gpp/deploy.json`); first-start runs automatically in the container once:
+
 ```bash
-cd apps/cms
-npm install
-npm run develop
+gpp start cms
+```
+
+Or from the CMS directory:
+
+```bash
+cd apps/<your-cms-path>   # e.g. apps/myproject-node-strapi-cms
+docker compose --env-file .env up -d
 ```
 
 Access:
-- Strapi Admin: http://localhost:1337/admin
+- Strapi Admin: http://localhost:1337/admin (or 1338 for strapi-dev)
 - API: http://localhost:1337/api
 - GraphQL: http://localhost:1337/graphql
 
